@@ -10,3 +10,8 @@ body,
 	width: 100%;
 	@apply text-sm;
 }
+
+body {
+	display: flex;
+	flex-direction: column;
+}

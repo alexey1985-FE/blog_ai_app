@@ -34,10 +34,10 @@ export default function Home() {
 
 				const formattedPosts = await Promise.all(
 					postsArr.map(async (post: Post) => {
-						const imageModule = require(`../public${post.image}`);
+						// const imageModule = require(`../public${post.image}`);
 						return {
 							...post,
-							image: imageModule.default,
+							image: post.image
 						};
 					})
 				);

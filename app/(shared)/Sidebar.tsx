@@ -20,7 +20,7 @@ const Sidebar = (props: Props) => {
 			<Image
 				className="hidden md:block my-8 w-full"
 				alt="advert-2"
-				placeholder="blur"
+				// placeholder="blur"
 				src={Ad2}
 				width={500}
 				height={1000}
@@ -31,7 +31,7 @@ const Sidebar = (props: Props) => {
 			<div className="flex justify-center my-3">
 				<Image
 					alt="about-profile"
-					placeholder="blur"
+					// placeholder="blur"
 					src={AboutProfile}
 					style={{ width: "500px", height: "250px", objectFit: "cover" }}
 				/>

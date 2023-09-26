@@ -20,7 +20,7 @@ const TrendingCard = ({ className, post }: TrendingCardProps) => {
 						fill
 						alt="tech"
 						src={post.image}
-						placeholder="blur"
+						// placeholder="blur"
 						sizes="(max-width: 480px) 100vw,
             (max-width: 768px) 75vw,
             (max-width: 1060px) 50vw,
@@ -57,18 +57,6 @@ const Trending = ({ trendingPosts }: Props) => {
 					dolor diam turpis.
 				</p>
 			</div>
-
-			{/* flex option */}
-			{/* <div className="flex justify-between gap-3 my-3">
-        <div className="basis-1/2 bg-wh-500 h-96"></div>
-        <div className="flex flex-col basis-1/2 gap-3 h-96">
-          <div className="basis-1/2 bg-wh-500"></div>
-          <div className="flex basis-1/2 gap-3">
-            <div className="basis-1/2 bg-wh-500"></div>
-            <div className="basis-1/2 bg-wh-500"></div>
-          </div>
-        </div>
-      </div> */}
 
 			{/* grid option */}
 			<div className="sm:grid gap-5 grid-cols-4 grid-rows-2 sm:h-[600px] my-3">
