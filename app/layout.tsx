@@ -17,9 +17,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html lang="en">
 			<body className={openSans.className} suppressHydrationWarning={true}>
 				<SessionProvider>
-					<Navbar />
-					{children}
-					<Footer />
+						<Navbar />
+						{children}
+						<Footer />
 				</SessionProvider>
 			</body>
 		</html>

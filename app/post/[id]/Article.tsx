@@ -30,8 +30,6 @@ const Article = ({
 		});
 		const data = await response.json();
 
-		console.log('Article.tsx data', data);
-
 		editor.chain().focus().setContent(data.content).run();
 		setContent(data.content);
 	};

@@ -19,6 +19,9 @@ const config: Config = {
 				"gradient-gradual":
 					"linear-gradient(180deg, rgba(116, 116, 116, 0) 66.15%, #000000 100%)",
 			}),
+			maxWidth: {
+        'ch-95': '95ch',
+      },
 		},
 		screens: {
 			xs: "480px",
