@@ -51,7 +51,6 @@ export default function Signin() {
   };
 
   return (
-
     <form className='flex h-100 flex-1 flex-col justify-center px-6 pb-8 lg:px-8'
       onSubmit={handleCredentialsSignIn}
     >
@@ -95,12 +94,12 @@ export default function Signin() {
                 Password
               </label>
               <div className="text-sm">
-                <div
-                  onClick={() => router.push("/forgot-password")}
+                <Link
+                  href='/forgot-password'
                   className="cursor-pointer font-semibold text-indigo-400 hover:text-indigo-300"
                 >
                   Forgot password?
-                </div>
+                </Link>
               </div>
             </div>
             <div className="mt-2">

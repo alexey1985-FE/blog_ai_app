@@ -21,7 +21,7 @@ const Navbar = () => {
   const user = data?.user?.email;
   const uid = data?.user?.uid;
 
-  console.log('Navbar.tsx data', data);
+  // console.log('Navbar.tsx data', data);
 
   useEffect(() => {
     const getUser = async () => {

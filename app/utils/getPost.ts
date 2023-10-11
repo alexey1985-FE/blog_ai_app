@@ -1,9 +1,9 @@
-import { db } from "@/firebase-config";
-import { doc, getDoc } from "firebase/firestore";
+import { db } from '@/firebase-config';
+import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 
 export const getPostById = async (postId: string) => {
 	try {
-		const postRef = doc(db, "posts", postId);
+		const postRef = doc(db, 'posts', postId);
 		const postSnapshot = await getDoc(postRef);
 
 		if (postSnapshot.exists()) {
@@ -15,4 +15,9 @@ export const getPostById = async (postId: string) => {
 	} catch (error) {
 		throw error;
 	}
+};
+
+export const deletePost = async (postId: string): Promise<void> => {
+	const postRef = doc(db, 'posts', postId);
+	await deleteDoc(postRef);
 };

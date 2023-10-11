@@ -42,14 +42,14 @@ export default function CreatePost() {
 	const [file, setFile] = useState<File | null>(null);
 	const [image, setImage] = useState('');
 	const [userName, setUserName] = useState('');
-	const [userGoogleUid, setUserGoogleUid] = useState<string | null>(null);
+	const [userId, setUserId] = useState<string | null>(null);
 	const [imageInputValue, setImageInputValue] = useState('');
 	const [isAiContentGenerated, setIsAiContentGenerated] = useState(false);
 
 	const { title, category, content, snippet } = form;
 	const { data } = useSession();
 
-  console.log(data)
+  console.log(userId, userName)
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setForm({ ...form, title: e.target.value });
@@ -88,7 +88,7 @@ export default function CreatePost() {
 
 	const createAiContent = async () => {
     setIsAiContentGenerated(true);
-		editor?.chain().focus().setContent('Generating Ai Content. Please Wait...').run();
+		editor?.chain().focus().setContent('Generating AI Content. Please Wait...').run();
 
 		const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/openai`, {
 			method: 'POST',
@@ -143,7 +143,7 @@ export default function CreatePost() {
 			const docRef = await addDoc(collection(db, 'posts'), post);
 			await setDoc(
 				doc(db, 'posts', docRef.id),
-				{ googleUid: userGoogleUid },
+				{ userId },
 				{ merge: true },
 			);
 
@@ -159,10 +159,10 @@ export default function CreatePost() {
 
 	useEffect(() => {
 		if (data) {
-			setUserName(data?.user?.name);
+			setUserName(data?.user?.name || data?.user?.userName);
 		}
 		if (data?.user?.uid) {
-			setUserGoogleUid(data?.user?.uid);
+			setUserId(data?.user?.uid);
 		}
 	}, [data]);
 
@@ -186,6 +186,7 @@ export default function CreatePost() {
 										id='title'
 										value={title}
 										onChange={handleTitleChange}
+                    required
 										className='block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6'
 									/>
 								</div>
@@ -231,6 +232,7 @@ export default function CreatePost() {
 											type='file'
 											name='image'
 											id='image'
+                      required
 											value={imageInputValue}
 											onChange={handleFileChange}
 											className='block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6'

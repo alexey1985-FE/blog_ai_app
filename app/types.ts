@@ -1,4 +1,5 @@
 import { Editor } from "@tiptap/react";
+import { Timestamp } from "firebase/firestore";
 
 export interface Post {
 	image: string;
@@ -9,8 +10,9 @@ export interface Post {
 	createdAt: string;
 	author: string;
 	content: string;
-	uid?: string
+	userId?: string
 	googleUid: string
+  postId: string
 }
 
 export type ArticleProps = {
@@ -32,4 +34,15 @@ export type EditorProps = {
 	setTempContent: (tempContent: string) => void;
 	editor: Editor | null;
 	post: Post;
+  postId: string
 };
+
+export type Comment = {
+  commentId: string;
+  postId: string;
+  text: string;
+  userName?: string;
+  userLogo?: string;
+  createdAt: Timestamp
+};
+
