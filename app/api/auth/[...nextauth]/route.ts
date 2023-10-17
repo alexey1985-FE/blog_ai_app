@@ -12,6 +12,7 @@ export const authOptions: AuthOptions = {
 	// Configure one or more authentication providers
 	pages: {
 		signIn: '/signin',
+    signOut: '/'
 	},
 	providers: [
 		CredentialsProvider({

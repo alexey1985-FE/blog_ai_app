@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { ArticleProps, EditorProps } from "@/types";
+import { ArticleProps } from "@/types";
 import EditorMenuBar from "./EditorMenuBar";
-import { Editor, EditorContent } from "@tiptap/react";
+import { EditorContent } from "@tiptap/react";
 import { RocketLaunchIcon } from "@heroicons/react/24/solid";
 
 const Article = ({
@@ -11,27 +11,28 @@ const Article = ({
 	setContent,
 	title,
 }: ArticleProps) => {
-	const [role, setRole] = useState<string>("I am a helpful assistant.");
+	const [role, setRole] = useState<string>('');
 
 	if (!editor) {
 		return null;
 	}
 
 	const postAiContent = async () => {
-		editor.chain().focus().setContent("Generating Ai Content. Please Wait...").run();
+		editor.chain().focus().setContent("Generating AI Content. Please Wait...").run();
 
 		const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/openai`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
-				title: title,
-				role: role,
+				title,
+				role
 			}),
 		});
 		const data = await response.json();
 
 		editor.chain().focus().setContent(data.content).run();
 		setContent(data.content);
+    setRole('')
 	};
 
 	return (
@@ -39,18 +40,18 @@ const Article = ({
 			{/* AI GENERATOR */}
 			{isEditable && (
 				<div className="border-2 rounded-md bg-wh-50 p-3 mb-3">
-					<h4 className="m-0 p-0">Generate AI Content</h4>
-					<p className="my-1 p-0 text-xs">What type of writer do you want?</p>
-					<div className="flex gap-5 justify-between">
+					<h4 className="m-0 p-0 mb-2 text-lg">Generate AI Content</h4>
+					<div className="flex gap-5">
 						<input
-							className="border-2 rounded-md bg-wh-50 px-3 py-1 w-full"
-							placeholder="Role"
+							className="border-2 rounded-md bg-wh-50 px-3 py-1 w-[50%]"
+							placeholder="Write the post style"
 							onChange={e => setRole(e.target.value)}
 							value={role}
 						/>
-						<button type="button" onClick={postAiContent}>
-							<RocketLaunchIcon className="h-8 w-8 text-accent-orange hover:text-wh-300" />
-						</button>
+						<button type='button' onClick={postAiContent} className="flex items-center bg-gray-200 p-2 rounded-lg">
+              Generate with AI
+              <RocketLaunchIcon className='h-8 w-8 text-indigo-500 ml-2 hover:text-indigo-400' />
+            </button>
 					</div>
 				</div>
 			)}
@@ -59,7 +60,7 @@ const Article = ({
 			>
 				{isEditable && (
 					<div>
-						<EditorMenuBar editor={editor} />
+						<EditorMenuBar editor={editor} createAiContent={postAiContent} />
 						<hr className="border-1 mt-2 mb-5" />
 					</div>
 				)}

@@ -1,5 +1,4 @@
 import { Editor } from "@tiptap/react";
-import { Timestamp } from "firebase/firestore";
 
 export interface Post {
 	image: string;
@@ -43,6 +42,6 @@ export type Comment = {
   text: string;
   userName?: string;
   userLogo?: string;
-  createdAt: Timestamp
+  createdAt: string
 };
 

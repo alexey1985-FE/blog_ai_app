@@ -49,8 +49,6 @@ export default function CreatePost() {
 	const { title, category, content, snippet } = form;
 	const { data } = useSession();
 
-  console.log(userId, userName)
-
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setForm({ ...form, title: e.target.value });
 	};
@@ -95,7 +93,7 @@ export default function CreatePost() {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				title: title,
-				role: 'scientific',
+				role: category,
 			}),
 		});
 		const data = await response.json();

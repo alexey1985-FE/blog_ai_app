@@ -7,6 +7,7 @@ import SocialLinks from "./SocialLinks";
 import Ad1 from "/public/assets/ad-1.jpg";
 import { useSession, signOut } from "next-auth/react";
 import { getUserName } from "@/utils/getUserNameByUid";
+import { useRouter } from "next/navigation";
 
 
 const Navbar = () => {
@@ -20,8 +21,21 @@ const Navbar = () => {
   const { data } = useSession();
   const user = data?.user?.email;
   const uid = data?.user?.uid;
+  const router = useRouter();
 
-  // console.log('Navbar.tsx data', data);
+  console.log(data)
+
+
+  const logOut = async () => {
+    try {
+      await signOut({ redirect: false,  callbackUrl: '/' });
+      setUserName('')
+      setUserLogo('')
+      router.push("/");
+    } catch (error) {
+      console.error("Error during sign out:", error);
+    }
+  }
 
   useEffect(() => {
     const getUser = async () => {
@@ -72,9 +86,9 @@ const Navbar = () => {
 
   return (
     <header className="mb-5 mt-20">
-      <nav className="flex justify-between items-center bg-wh-900 w-full text-wh-10 px-10 py-4" 
-           style={headerStyle} 
-           ref={headerRef}
+      <nav className="flex justify-between items-center bg-wh-900 w-full text-wh-10 px-10 py-4"
+        style={headerStyle}
+        ref={headerRef}
       >
         <div className="hidden sm:block">
           <SocialLinks />
@@ -96,8 +110,8 @@ const Navbar = () => {
             />
           )}
           {userName ? (
-            <button className="text-white" onClick={() => signOut()}>
-              Log out
+            <button className="text-white" onClick={logOut}>
+              Logout
             </button>
           ) : (
             <Link href="/signin">Log In</Link>
@@ -115,7 +129,6 @@ const Navbar = () => {
           <Image
             fill
             alt="advert-1"
-            // placeholder="blur"
             src={Ad1}
             sizes="(max-width: 480px) 100vw,
                 (max-width: 768px) 75vw,

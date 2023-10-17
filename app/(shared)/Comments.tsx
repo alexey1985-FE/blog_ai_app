@@ -88,12 +88,11 @@ const Comments: React.FC<Comment> = ({ postId }) => {
 
       if (!target.closest('.edit-comment-container')) {
         setEditCommentId(null);
-        document.removeEventListener('click', handleDocumentClick); 
+        document.removeEventListener('click', handleDocumentClick);
       }
     },
     [commentUserName, userName]
   );
-
 
   useEffect(() => {
     if (data?.user?.userName) {
@@ -111,7 +110,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
     fetchComments();
   }, [postId, data]);
 
-  console.log('Comments.tsx commentUserName', commentUserName, editCommentId);
+  // console.log('Comments.tsx commentUserName', commentUserName, editCommentId);
 
 
   return (

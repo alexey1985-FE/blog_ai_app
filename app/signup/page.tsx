@@ -5,7 +5,8 @@ import { signIn } from 'next-auth/react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
-import { checkIfFieldExists } from '@/utils/checkIfFieldExists'
+import { checkIfFieldExists } from '@/utils/checkIfFieldExists';
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
   const [userName, setUsername] = useState('');
@@ -13,6 +14,8 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [passwordAgain, setPasswordAgain] = useState('');
   const [error, setError] = useState('');
+
+  const router = useRouter();
 
   const signup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -41,7 +44,8 @@ export default function Signup() {
         };
 
         await setDoc(doc(db, 'users', uid), userDoc);
-        signIn('credentials', { email, password, redirect: true, callbackUrl: '/' });
+        signIn('credentials', { email, password, redirect: false, callbackUrl: '/' });
+        router.push('/')
       })
       .catch((error) => {
         console.error('Error creating user:', error);

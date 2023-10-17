@@ -29,3 +29,7 @@ body {
 .animate-fade-in {
   animation: fade-in 0.1s ease-in;
 }
+
+article p:not(:first-child) {
+  font-size: 17px
+}

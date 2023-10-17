@@ -15,7 +15,6 @@ export default function Signin() {
 
   const router = useRouter();
 
-
   const handleCredentialsSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const userExists = await checkIfFieldExists('email', email);
@@ -29,9 +28,10 @@ export default function Signin() {
       email,
       password,
       userUid,
-      redirect: true,
+      redirect: false,
       callbackUrl: '/',
     });
+    router.push('/')
   };
 
   useEffect(() => {
@@ -47,7 +47,8 @@ export default function Signin() {
   }, []);
 
   const handleGoogleSignIn = async () => {
-    await signIn("google", { redirect: true, callbackUrl: "/" });
+    await signIn("google", { redirect: false, callbackUrl: "/" });
+    router.push('/')
   };
 
   return (
