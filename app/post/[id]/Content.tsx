@@ -10,9 +10,10 @@ import CategoryAndEdit from "./CategoryAndEdit";
 import Article from "./Article";
 import Comments from "@/(shared)/Comments";
 import { db } from "@/firebase-config";
-import { doc, getDoc, increment, setDoc, updateDoc, onSnapshot, runTransaction } from "firebase/firestore";
+import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import { useSession } from 'next-auth/react';
 import { EyeIcon } from '@heroicons/react/24/solid'
+import { snippetGenerate } from "@/utils/snippetGenerate";
 
 type Props = {
   post: Post;
@@ -22,7 +23,6 @@ type Props = {
 const Content = ({ post, postId }: Props) => {
 
   const [isEditable, setIsEditable] = useState(false);
-
   const [title, setTitle] = useState<string>(post.title);
   const [titleError, setTitleError] = useState<string>("");
   const [tempTitle, setTempTitle] = useState<string>(title);
@@ -39,6 +39,8 @@ const Content = ({ post, postId }: Props) => {
   const options = { year: "numeric", month: "long", day: "numeric" } as any;
   const formattedDate = date.toLocaleDateString("en-US", options);
 
+  console.log('Content.tsx content', content);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -53,7 +55,8 @@ const Content = ({ post, postId }: Props) => {
       },
       body: JSON.stringify({
         title,
-        content
+        content,
+        snippet: snippetGenerate(content)
       }),
     });
 
@@ -82,7 +85,7 @@ const Content = ({ post, postId }: Props) => {
   const editor = useEditor({
     extensions: [StarterKit],
     onUpdate: handleOnChangeContent,
-    content: content,
+    content,
     editable: isEditable,
     editorProps: {
       attributes: {
@@ -130,14 +133,11 @@ const Content = ({ post, postId }: Props) => {
     }
   };
 
-
   useEffect(() => {
     if (userAuthId) {
       incrementViews();
     }
   }, [userAuthId, postId]);
-
-
 
   return (
     <div className="prose w-full max-w-full mb-10">

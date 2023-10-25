@@ -86,7 +86,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
     (e: MouseEvent) => {
       const target = e.target as HTMLElement;
 
-      if (!target.closest('.edit-comment-container')) {
+      if (!target.closest('.edit-comment-container') && !target.matches('input')) {
         setEditCommentId(null);
         document.removeEventListener('click', handleDocumentClick);
       }
@@ -109,9 +109,6 @@ const Comments: React.FC<Comment> = ({ postId }) => {
 
     fetchComments();
   }, [postId, data]);
-
-  // console.log('Comments.tsx commentUserName', commentUserName, editCommentId);
-
 
   return (
     <>

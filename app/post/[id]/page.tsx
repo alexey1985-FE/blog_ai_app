@@ -1,5 +1,5 @@
 import Sidebar from "@/(shared)/Sidebar";
-import { getPostById } from "@/utils/getPost";
+import { getPostById } from "@/utils/fetchPosts";
 import React from "react";
 import Content from "./Content";
 import { Post } from '@/types'

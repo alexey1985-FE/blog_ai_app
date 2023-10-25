@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { XMarkIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useSession } from "next-auth/react";
 import { deleteCommentsForPost } from "@/utils/fetchComments";
-import { deletePost } from "@/utils/getPost";
+import { deletePost } from "@/utils/fetchPosts";
 import { useRouter } from "next/navigation";
 
 const CategoryAndEdit = ({
@@ -46,7 +46,7 @@ const CategoryAndEdit = ({
       console.error("Error deleting post:", error);
     }
     finally {
-      setShowDeleteConfirmation(false); // Закрываем модальное окно после удаления
+      setShowDeleteConfirmation(false);
     }
   }
 

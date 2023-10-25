@@ -18,8 +18,8 @@ const EditorMenuBar = ({ editor, createAiContent }: Props) => {
 
 
   return (
-    <div className='flex justify-between items-center'>
-      <div className='flex items-center gap-4'>
+    <div className='flex flex-col sm:flex-row justify-between items-center'>
+      <div className='flex items-center gap-4 mb-4 sm:mb-0'>
         <button
           type='button'
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}

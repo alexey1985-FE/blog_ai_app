@@ -36,7 +36,6 @@ const Card = ({
 							fill
 							alt="tech"
 							src={image}
-							// placeholder="blur"
 							sizes="(max-width: 480px) 100vw,
                   (max-width: 768px) 75vw,
                   (max-width: 1060px) 50vw,

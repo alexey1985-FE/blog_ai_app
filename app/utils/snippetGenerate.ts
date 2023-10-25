@@ -1,6 +1,17 @@
-export const snippetGenerate = (content: string): string  => {
-  const strippedContent = content.replace(/<[^>]+>/g, '')
-  return strippedContent.length <= 256
-    ? strippedContent
-    : strippedContent.slice(0, 256) + '...';
-}
+export const snippetGenerate = (content: string): string => {
+	const match = /<p>(.*?)<\/p>/i.exec(content);
+
+	if (match) {
+		const firstParagraphText = match[1];
+
+		const maxTextLength = 256;
+
+		if (firstParagraphText.length > maxTextLength) {
+			return firstParagraphText.slice(0, maxTextLength) + '...';
+		}
+
+		return firstParagraphText + '...';
+	}
+
+	return '';
+};

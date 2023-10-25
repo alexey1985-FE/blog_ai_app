@@ -8,7 +8,6 @@ type Props = {
 };
 
 const Other = ({ otherPosts, elsePosts }: Props) => {
-	// console.log(elsePosts);
 
 	return (
 		<section className="pt-4 mb-16">
@@ -18,7 +17,7 @@ const Other = ({ otherPosts, elsePosts }: Props) => {
 			<div className="sm:grid grid-cols-2 gap-16">
 				{otherPosts.map(otherpost => (
 					<React.Fragment key={otherpost.id}>
-						<Card className="mt-5 sm:mt-0" imageHeight="h-80" post={otherpost} />
+						{/* <Card className="mt-5 sm:mt-0" imageHeight="h-80" post={otherpost} /> */}
 					</React.Fragment>
 				))}
 
@@ -27,27 +26,6 @@ const Other = ({ otherPosts, elsePosts }: Props) => {
 						<Card className="mt-5 sm:mt-0" imageHeight="h-80" post={otherpost} />
 					</React.Fragment>
 				))}
-
-				{/* <Card
-          className="mt-5 sm:mt-0"
-          imageHeight="h-80"
-          post={otherPosts[0]}
-        />
-        <Card
-          className="mt-5 sm:mt-0"
-          imageHeight="h-80"
-          post={otherPosts[1]}
-        />
-        <Card
-          className="mt-5 sm:mt-0"
-          imageHeight="h-80"
-          post={otherPosts[2]}
-        />
-        <Card
-          className="mt-5 sm:mt-0"
-          imageHeight="h-80"
-          post={otherPosts[3]}
-        /> */}
 			</div>
 		</section>
 	);

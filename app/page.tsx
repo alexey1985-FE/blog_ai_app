@@ -1,43 +1,13 @@
-"use client";
-
 import Trending from "app/(home)/Trending";
 import Tech from "app/(home)/Tech";
 import Travel from "app/(home)/Travel";
 import Other from "app/(shared)/Other";
 import Sidebar from "app/(shared)/Sidebar";
-import { db } from "./firebase-config";
-import {
-  collection,
-  onSnapshot,
-  query,
-  orderBy,
-  QuerySnapshot,
-  DocumentData,
-  DocumentSnapshot,
-} from "firebase/firestore";
-import { useEffect, useState } from "react";
 import { Post } from "./types";
+import { getPosts } from "./utils/fetchPosts";
 
-export default function Home() {
-  const [posts, setPosts] = useState<Post[]>([]);
-
-  useEffect(() => {
-    const getPosts = async () => {
-      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-      const unSubscribe = onSnapshot(q, async (querySnapshot: QuerySnapshot<DocumentData>) => {
-        const postsArr: Post[] = [];
-
-        querySnapshot.forEach((doc: DocumentSnapshot<DocumentData>) => {
-          const data = doc.data();
-          postsArr.push({ ...data, id: doc.id } as Post);
-        });
-
-        setPosts(postsArr);
-        return () => unSubscribe();
-      });
-    };
-    getPosts();
-  }, []);
+export default async function Home() {
+  const posts = await getPosts()
 
   const formatPosts = () => {
     const trendingPosts: Post[] = [];

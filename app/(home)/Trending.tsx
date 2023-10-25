@@ -20,7 +20,6 @@ const TrendingCard = ({ className, post }: TrendingCardProps) => {
 						fill
 						alt="tech"
 						src={post.image}
-						// placeholder="blur"
 						sizes="(max-width: 480px) 100vw,
             (max-width: 768px) 75vw,
             (max-width: 1060px) 50vw,
@@ -36,7 +35,6 @@ const TrendingCard = ({ className, post }: TrendingCardProps) => {
 				</h4>
 				<div className="text-wh-100 mt-2">
 					{post?.title}
-					{/* post title */}
 				</div>
 			</div>
 		</Link>

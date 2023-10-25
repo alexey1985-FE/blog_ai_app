@@ -12,6 +12,7 @@ export interface Post {
 	userId?: string
 	googleUid: string
   postId: string
+  views?: number
 }
 
 export type ArticleProps = {

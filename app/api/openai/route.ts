@@ -13,12 +13,13 @@ export async function POST(request: Request) {
 			messages: [
 				{
 					role: 'user',
-					content: `Create blog post using html tags for formatting text based on this title: ${title} and contains only 3 lines of text. 
-          It is not necessary to write each sentence with a new heading and start on a new line. 
-          Write text with one heading and continue as regular text. 
-          Start writing sentences from a paragraph only if it makes sense. 
+					content: `Create blog post using html tags (for heading and paragraph only) for formatting text based on this title: ${title} and contains only 3 lines of text.
+          It is not necessary to write each sentence with a new heading and start on a new line.
+          Write text with one heading and continue as regular text.
+          Start writing sentences from a paragraph only if it makes sense.
           The text style should be like a magazine article.
-          Write text according to ${role} style.`,
+          Write of the post only with ${title} name without ${role}.
+          Write text content according to the meaning of ${title} and ${role}.`,
 				},
 				{
 					role: 'system',

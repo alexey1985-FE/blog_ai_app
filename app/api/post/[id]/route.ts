@@ -7,10 +7,10 @@ type Params = { params: { id: string } };
 export async function PATCH(request: Request, { params }: Params) {
 	try {
 		const { id } = params;
-		const { title, content } = await request.json();
-		
+		const { title, content, snippet } = await request.json();
+
 		const postRef = doc(db, "posts", id);
-		await updateDoc(postRef, { title, content });
+		await updateDoc(postRef, { title, content, snippet });
 
 		return NextResponse.json({ success: true }, { status: 200 });
 	} catch (error) {
