@@ -41,6 +41,7 @@ const CategoryAndEdit = ({
       await deleteCommentsForPost(postId);
       await deletePost(postId);
 
+      router.refresh();
       router.push("/");
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -55,7 +56,7 @@ const CategoryAndEdit = ({
   }, [data]);
 
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center mb-1">
       <h4 className="bg-accent-orange py-2 px-5 text-wh-900 text-sm font-bold">
         {post.category}
       </h4>

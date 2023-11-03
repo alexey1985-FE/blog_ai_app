@@ -6,6 +6,7 @@ import { Comment } from '@/types';
 import { useSession } from 'next-auth/react';
 import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { TrashIcon } from '@heroicons/react/24/solid'
+import Image from 'next/image';
 
 const Comments: React.FC<Comment> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
@@ -118,7 +119,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
           {comments.map((comment, index) => (
             <div key={index} className="flex items-center">
               {comment.userLogo ?
-                <img src={comment.userLogo} alt="logo" width={40} height={40} className="m-0 mr-5 rounded-full translate-x-1" /> :
+                <Image src={comment.userLogo} alt="user logo" width={40} height={40} className="m-0 mr-5 rounded-full translate-x-1" /> :
                 <UserCircleIcon className="w-14 h-14 mr-3 text-gray-300" />
               }
               <div className={`flex flex-col translate-y-3 edit-comment-container ${userName && comment.userName === userName ? 'hover:cursor-pointer' : ''}`}
@@ -158,7 +159,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
                 required
                 className="w-full p-3 rounded-md border-2 border-grey-200 flex items-center focus:outline-none"
               />
-              <button type="submit" className='mt-3 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none'>Add comment</button>
+              <button type="submit" className='mt-3 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none'>Add</button>
             </>
           ) : (
             <>

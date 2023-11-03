@@ -13,8 +13,8 @@ const EditorMenuBar = ({ editor, createAiContent }: Props) => {
     return null;
   }
 
-  const pathname = usePathname();
-  const pageName = pathname.split('/').pop();
+  const pathName = usePathname();
+  const pageName = pathName.split('/').pop();
 
 
   return (

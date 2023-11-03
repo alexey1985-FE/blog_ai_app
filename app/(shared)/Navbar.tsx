@@ -9,6 +9,8 @@ import { getUserName } from "@/utils/getUserNameByUid";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { MenuBtn } from "./MenuBtn";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
+import useMedia from "use-media";
 
 const Navbar = () => {
   const [userName, setUserName] = useState("");
@@ -17,11 +19,12 @@ const Navbar = () => {
   const [prevScrollY, setPrevScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("");
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   const headerRef = useRef<HTMLDivElement | null>(null);
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+  const isMobile = useMedia('(max-width: 767px)');
 
-  const { data } = useSession();
+  const { data, update } = useSession();
   const user = data?.user?.email;
   const uid = data?.user?.uid;
   const router = useRouter();
@@ -31,6 +34,8 @@ const Navbar = () => {
       await signOut({ redirect: false, callbackUrl: '/' });
       setUserName('')
       setUserLogo('')
+
+      update()
       router.push("/");
     } catch (error) {
       console.error("Error during sign out:", error);
@@ -40,6 +45,7 @@ const Navbar = () => {
   const toggleLink = (link: string) => {
     setActiveLink(link)
   };
+
 
   useEffect(() => {
     const getUser = async () => {
@@ -56,6 +62,18 @@ const Navbar = () => {
     };
     getUser();
   }, [user]);
+
+  const headerStyle: CSSProperties = {
+    top: scrollingDown ? `-${headerRef?.current?.clientHeight || 0}px` : "0",
+    position: "fixed",
+    width: "100%",
+    transition: "top 0.3s",
+    zIndex: 5,
+  };
+
+  const handleLogOut = () => {
+    setLogoutOpen(!logoutOpen)
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,13 +97,16 @@ const Navbar = () => {
     };
   }, [prevScrollY]);
 
-  const headerStyle: CSSProperties = {
-    top: scrollingDown ? `-${headerRef?.current?.clientHeight || 0}px` : "0",
-    position: "fixed",
-    width: "100%",
-    transition: "top 0.3s",
-    zIndex: 1,
-  };
+  useEffect(() => {
+    const handleDocumentClick = () => {
+      setLogoutOpen(false);
+    };
+    document.addEventListener("click", handleDocumentClick);
+
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, [logoutOpen]);
 
   return (
     <header className="mb-5 mt-20">
@@ -138,19 +159,49 @@ const Navbar = () => {
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
               <div className="flex gap-2 items-center">
                 {userName && <p className="text-gray-300 font-medium">{userName}</p>}
-                {userLogo && (
+                {userLogo ? (
                   <Image
                     alt="user-logo"
                     src={userLogo}
                     width={40}
                     height={40}
-                    className="rounded-full"
+                    className="rounded-full hover:cursor-pointer"
+                    onClick={handleLogOut}
+                    tabIndex={0}
+                    aria-labelledby="logout"
+                    onKeyUp={(e) => {
+                      if (e.key === "Enter") {
+                        handleLogOut();
+                      }
+                    }}
                   />
-                )}
+                ) : !userLogo && userName ? <UserCircleIcon className="w-10 h-10 text-gray-300 hover:cursor-pointer" onClick={handleLogOut} /> : null}
+
                 {userName ? (
-                  <button className="text-gray-300 font-medium hover:bg-gray-700 hover:text-white" onClick={logOut}>
-                    Logout
-                  </button>
+                  <div className="relative">
+                    <AnimatePresence>
+                      {logoutOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.1, type: "tween" }}
+                          className="absolute top-2 right-3 z-10 w-40 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+                          role="menu"
+                          aria-orientation="vertical"
+                          aria-labelledby="logout"
+                          tabIndex={0}
+                        >
+                          <div className="py-1" role="none">
+                            <Link href="/" onClick={logOut} className="text-gray-700 block px-4 w-full py-2 text-sm hover:bg-gray-300" role="menuitem" tabIndex={-1} id="menu-item-0">
+                              Log out
+                            </Link>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
                 ) : (
                   <Link className="text-gray-300 font-medium hover:bg-gray-700 hover:text-white" href="/signin">Log In</Link>
                 )}

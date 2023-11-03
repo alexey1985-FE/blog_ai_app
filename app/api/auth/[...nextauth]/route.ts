@@ -40,11 +40,6 @@ export const authOptions: AuthOptions = {
 						return null;
 					})
 					.catch((error) => console.log(error))
-					.catch((error) => {
-						const errorCode = error.code;
-						const errorMessage = error.message;
-						console.log(error);
-					});
 			},
 		}),
 		GoogleProvider({
@@ -62,10 +57,14 @@ export const authOptions: AuthOptions = {
         const userName = await getUserName(firebaseUser.uid as string);
         firebaseUser.userName = userName || '';
       }
-      
+
 			return session;
 		},
 	},
+  session: {
+    strategy: 'jwt',
+    maxAge: 4 * 60 * 60 // 4 hours
+  },
 };
 
 const handler = NextAuth(authOptions);

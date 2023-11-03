@@ -1,6 +1,5 @@
 'use client';
-
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent, useCallback, memo, useMemo } from 'react';
 import Image from 'next/image';
 import { db, storage } from '@/firebase-config';
 import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
@@ -11,6 +10,8 @@ import StarterKit from '@tiptap/starter-kit';
 import EditorMenuBar from '@/post/[id]/EditorMenuBar';
 import { snippetGenerate } from '@/utils/snippetGenerate';
 import { XCircleIcon } from "@heroicons/react/24/solid";
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 interface PostContent {
   title: string;
@@ -20,24 +21,14 @@ interface PostContent {
   image: string;
 }
 
-export default function CreatePost() {
-  const initialState: PostContent = {
+const CreatePost = () => {
+  const initialState = () => ({
     title: '',
     category: '',
     content: '',
     snippet: '',
     image: '',
-  };
-
-  const categoryOption: string[] = [
-    'Fashion',
-    'Tech',
-    'Food',
-    'Politics',
-    'Sports',
-    'Travel',
-    'Business',
-  ];
+  });
 
   const [form, setForm] = useState<PostContent>(initialState);
   const [file, setFile] = useState<File | null>(null);
@@ -49,14 +40,19 @@ export default function CreatePost() {
 
   const { title, category, content, snippet } = form;
   const { data } = useSession();
+  const router = useRouter();
+
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, title: e.target.value });
+    if (form.title !== e.target.value) {
+      setForm({ ...form, title: e.target.value });
+    }
   };
 
-  const onCategoryChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setForm({ ...form, category: e.target.value === 'Category' ? '' : e.target.value });
-  };
+  console.log('page.tsx form', form);
+  const onCategoryChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, category: e.target.value });
+  }
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -77,7 +73,7 @@ export default function CreatePost() {
   const editor = useEditor({
     extensions: [StarterKit],
     onUpdate: handleOnChangeContent,
-    content: content,
+    content,
     editorProps: {
       attributes: {
         class: 'prose prose-sm xl:prose-2xl leading-8 focus:outline-none max-w-ch-95',
@@ -158,6 +154,9 @@ export default function CreatePost() {
       setFile(null);
       setImage('');
       setImageInputValue('');
+
+      router.refresh();
+      router.push("/");
     } catch (error) {
       console.error('Error creating post:', error);
     }
@@ -177,7 +176,7 @@ export default function CreatePost() {
       <form className='max-w-screen-xl px-3 min-w-full xs:min-w-[30rem] sm:min-w-[50rem]' onSubmit={handleSubmit}>
         <div className='space-y-12'>
           <div className=' border-gray-900/10'>
-            <div className='mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
+            <div className='sm:mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
               <div className='col-span-full'>
                 <label
                   htmlFor='title'
@@ -188,8 +187,6 @@ export default function CreatePost() {
                 <div className='mt-2'>
                   <input
                     type='text'
-                    name='title'
-                    id='title'
                     value={title}
                     onChange={handleTitleChange}
                     required
@@ -199,18 +196,21 @@ export default function CreatePost() {
               </div>
 
               <div className='col-span-full'>
-                <select
-                  value={category}
-                  onChange={onCategoryChange}
-                  className='rounded-md border-0 shadow-sm ring-1 ring-inset ring-gray-300 py-1.5 px-1 w-full focus:outline-none'
+                <label
+                  htmlFor='category'
+                  className='block text-sm font-medium leading-6 text-gray-900'
                 >
-                  <option>Category</option>
-                  {categoryOption.map((option, index) => (
-                    <option value={option || ''} key={index}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
+                  Category
+                </label>
+                <div className='mt-2'>
+                  <input
+                    type='text'
+                    value={category}
+                    onChange={onCategoryChange}
+                    required
+                    className='block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6'
+                  />
+                </div>
               </div>
 
               <div className='col-span-full'>
@@ -270,3 +270,5 @@ export default function CreatePost() {
     </div>
   );
 }
+
+export default CreatePost;

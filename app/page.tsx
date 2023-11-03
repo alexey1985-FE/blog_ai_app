@@ -1,49 +1,61 @@
-import Trending from "app/(home)/Trending";
+import Hot from "@/(home)/Hot";
 import Tech from "app/(home)/Tech";
 import Travel from "app/(home)/Travel";
 import Other from "app/(shared)/Other";
 import Sidebar from "app/(shared)/Sidebar";
 import { Post } from "./types";
 import { getPosts } from "./utils/fetchPosts";
+import { revalidatePath } from "next/cache";
 
 export default async function Home() {
-  const posts = await getPosts()
+  const posts: Post[] = await getPosts();
+  revalidatePath('/')
 
-  const formatPosts = () => {
-    const trendingPosts: Post[] = [];
-    const techPosts: Post[] = [];
-    const travelPosts: Post[] = [];
-    const otherPosts: Post[] = [];
-    const elsePosts: Post[] = [];
-
-    posts.forEach((post, i: number) => {
-      if (i < 4) {
-        trendingPosts.push(post);
-      }
-      if (post?.category === "Tech") {
-        techPosts.push(post);
-      } else if (post?.category === "Travel") {
-        travelPosts.push(post);
-      } else if (post?.category === "Interior Design") {
-        otherPosts.push(post);
-      } else {
-        elsePosts.push(post)
-      }
-    });
-
-    return [trendingPosts, techPosts, travelPosts, otherPosts, elsePosts];
+  const compareCreatedAt = (a: Post, b: Post) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+    return dateB.getTime() - dateA.getTime();
   };
 
-  const [trendingPosts, techPosts, travelPosts, otherPosts, elsePosts] = formatPosts();
+  const sortedPosts = posts.sort(compareCreatedAt);
+
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0); // Установите время на полночь текущей даты
+
+  // Отфильтруйте hotPosts
+  const hotPosts = sortedPosts.filter((post) => {
+    const postDate = new Date(post.createdAt);
+    const timeDifference = currentDate.getTime() - postDate.getTime();
+    const daysDifference = timeDifference / (1000 * 3600 * 24); // Разница в днях
+
+    return daysDifference <= 30;
+  });
+
+  // Остальная часть вашего кода
+  const techPosts: Post[] = [];
+  const travelPosts: Post[] = [];
+  const otherPosts: Post[] = [];
+
+  sortedPosts.forEach((post) => {
+    if (post?.category === "Tech") {
+      techPosts.push(post);
+    } else if (post?.category === "Travel") {
+      travelPosts.push(post);
+    } else {
+      if (!hotPosts.includes(post) && !techPosts.includes(post) && !travelPosts.includes(post) && !otherPosts.includes(post)) {
+        otherPosts.push(post);
+      }
+    }
+  });
 
   return (
-    <main className="px-10 leading-7">
-      <Trending trendingPosts={trendingPosts} />
+    <main className="px-5 sm:px-10 leading-7">
+      <Hot hotPosts={hotPosts} />
       <div className="md:flex gap-10 mb-5">
         <div className="basis-3/4">
           <Tech techPosts={techPosts} />
           <Travel travelPosts={travelPosts} />
-          <Other otherPosts={otherPosts} elsePosts={elsePosts} />
+          <Other otherPosts={otherPosts} />
         </div>
         <div className="basis-1/4">
           <Sidebar />

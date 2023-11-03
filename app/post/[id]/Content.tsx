@@ -1,7 +1,7 @@
 "use client"
 
 import { Post } from "@/types";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 import Image from "next/image";
 import SocialLinks from "@/(shared)/SocialLinks";
 import { useEditor, Editor } from "@tiptap/react";
@@ -9,11 +9,13 @@ import StarterKit from "@tiptap/starter-kit";
 import CategoryAndEdit from "./CategoryAndEdit";
 import Article from "./Article";
 import Comments from "@/(shared)/Comments";
-import { db } from "@/firebase-config";
+import { db, storage } from "@/firebase-config";
 import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import { useSession } from 'next-auth/react';
 import { EyeIcon } from '@heroicons/react/24/solid'
 import { snippetGenerate } from "@/utils/snippetGenerate";
+import { PencilSquareIcon } from "@heroicons/react/24/solid";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 type Props = {
   post: Post;
@@ -32,21 +34,31 @@ const Content = ({ post, postId }: Props) => {
   const [tempContent, setTempContent] = useState<string>(content);
   const [views, setViews] = useState<number>(0);
 
+  const [file, setFile] = useState<File | null>(null);
+  const [newImage, setNewImage] = useState<string | null>(null);
+
   const { data } = useSession()
   const userAuthId = data?.user?.uid
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
 
   const date = new Date(post?.createdAt);
   const options = { year: "numeric", month: "long", day: "numeric" } as any;
   const formattedDate = date.toLocaleDateString("en-US", options);
 
-  console.log('Content.tsx content', content);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let imageURL = post.image;
 
     if (title === "") setTitleError("This field is required.");
     if (editor?.isEmpty) setContentError("This field is required.");
     if (title === "" || editor?.isEmpty) return;
+
+    if (file) {
+      const uniqueImageName = Date.now() + '_' + file?.name;
+      const storageRef = ref(storage, `images/${uniqueImageName}`);
+      await uploadBytes(storageRef, file);
+      imageURL = await getDownloadURL(storageRef);
+    }
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/post/${postId}`, {
       method: "PATCH",
@@ -56,6 +68,7 @@ const Content = ({ post, postId }: Props) => {
       body: JSON.stringify({
         title,
         content,
+        image: imageURL,
         snippet: snippetGenerate(content)
       }),
     });
@@ -66,6 +79,7 @@ const Content = ({ post, postId }: Props) => {
     setTempTitle("");
     setTempContent("");
   };
+
 
   const handleIsEditable = (bool: boolean) => {
     setIsEditable(bool);
@@ -94,6 +108,29 @@ const Content = ({ post, postId }: Props) => {
       },
     },
   });
+
+
+  const handleEditImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    if (imageInputRef.current) {
+      imageInputRef.current.click();
+    }
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files ? e.target.files[0] : null;
+    setFile(selectedFile);
+
+    if (selectedFile) {
+      setFile(selectedFile);
+      const imageUrl = URL.createObjectURL(selectedFile);
+      setNewImage(imageUrl);
+    } else {
+      setFile(null);
+      setNewImage('');
+    }
+  };
 
   useEffect(() => {
     const postRef = doc(db, "posts", postId);
@@ -162,7 +199,7 @@ const Content = ({ post, postId }: Props) => {
       <form onSubmit={handleSubmit}>
         {/* HEADER*/}
         <>
-          {isEditable ? (
+          {isEditable && (
             <div>
               <input
                 className="border-2 rounded-md bg-wh-50 p-3 my-3 w-full"
@@ -172,14 +209,12 @@ const Content = ({ post, postId }: Props) => {
               />
               {titleError && <p className="mt-1 text-red-500">{titleError}</p>}
             </div>
-          ) : (
-            <h3 className="font-bold text-3xl mt-3">{title}</h3>
           )}
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-3 items-center flex-wrap">
             <h5 className="font-semibold text-xs">By {post.author}</h5>
             <h6 className="text-wh-300 text-xs">{formattedDate}</h6>
             <div className="text-wh-300 flex items-center">
-              <EyeIcon className="h-5 w-5 mx-1"/>
+              <EyeIcon className="h-5 w-5 mx-1" />
               <h6 className="text-xs m-0">{views} Views</h6>
             </div>
           </div>
@@ -190,13 +225,28 @@ const Content = ({ post, postId }: Props) => {
           <Image
             fill
             alt={post.title}
-            src={post.image}
-            sizes="(max-width: 480px) 100vw,
-                  (max-width: 768px) 85vw,
-                  (max-width: 1060px) 75vw,
-                  60vw"
-            style={{ objectFit: "cover" }}
+            src={newImage || post.image}
+            sizes="(max-width: 480px) 100vw, (max-width: 768px) 85vw, (max-width: 1060px) 75vw, 60vw"
+            style={{ objectFit: 'cover' }}
+            priority
           />
+          {isEditable && (
+            <>
+              <button
+                onClick={handleEditImage}
+                className="absolute top-10 right-3 bg-wh-50 bg-opacity-50 p-2 rounded-full hover:bg-opacity-100 focus:outline-none"
+              >
+                <PencilSquareIcon className="h-6 w-6 text-accent-red" />
+              </button>
+              <input
+                type="file"
+                accept="image/*"
+                ref={imageInputRef}
+                onChange={handleImageChange}
+                style={{ display: 'none' }}
+              />
+            </>
+          )}
         </div>
 
         {/* ARTICLE */}

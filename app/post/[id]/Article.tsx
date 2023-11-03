@@ -41,14 +41,14 @@ const Article = ({
 			{isEditable && (
 				<div className="border-2 rounded-md bg-wh-50 p-3 mb-3">
 					<h4 className="m-0 p-0 mb-2 text-lg">Generate AI Content</h4>
-					<div className="flex gap-5">
+					<div className="xs:flex gap-5">
 						<input
-							className="border-2 rounded-md bg-wh-50 px-3 py-1 w-[50%]"
+							className="border-2 rounded-md bg-wh-50 px-3 py-1 w-full xs:w-[50%] mb-3 xs:mb-0"
 							placeholder="Write the post style"
 							onChange={e => setRole(e.target.value)}
 							value={role}
 						/>
-						<button type='button' onClick={postAiContent} className="flex items-center bg-gray-200 p-2 rounded-lg">
+						<button type='button' onClick={postAiContent} className="flex items-center bg-gray-200 p-2 rounded-lg w-full xs:w-auto">
               Generate with AI
               <RocketLaunchIcon className='h-8 w-8 text-indigo-500 ml-2 hover:text-indigo-400' />
             </button>
