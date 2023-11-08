@@ -1,5 +1,4 @@
 'use client';
-
 import { auth, db } from '@/firebase-config';
 import { signIn } from 'next-auth/react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';

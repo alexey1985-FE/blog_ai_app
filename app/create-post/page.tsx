@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, ChangeEvent, FormEvent, useCallback, memo, useMemo } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import Image from 'next/image';
 import { db, storage } from '@/firebase-config';
 import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
@@ -49,7 +49,6 @@ const CreatePost = () => {
     }
   };
 
-  console.log('page.tsx form', form);
   const onCategoryChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, category: e.target.value });
   }

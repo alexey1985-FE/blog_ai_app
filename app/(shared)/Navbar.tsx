@@ -5,16 +5,14 @@ import Image from "next/image";
 import SocialLinks from "./SocialLinks";
 import Ad1 from "/public/assets/ad-1.jpg";
 import { useSession, signOut } from "next-auth/react";
-import { getUserName } from "@/utils/getUserNameByUid";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { MenuBtn } from "./MenuBtn";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import useMedia from "use-media";
+import useGetUser from "@/utils/useGetUser";
 
 const Navbar = () => {
-  const [userName, setUserName] = useState("");
-  const [userLogo, setUserLogo] = useState("");
   const [scrollingDown, setScrollingDown] = useState(false);
   const [prevScrollY, setPrevScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,8 +23,7 @@ const Navbar = () => {
   const isMobile = useMedia('(max-width: 767px)');
 
   const { data, update } = useSession();
-  const user = data?.user?.email;
-  const uid = data?.user?.uid;
+  const { userName, userLogo, setUserName, setUserLogo } = useGetUser()
   const router = useRouter();
 
   const logOut = async () => {
@@ -45,23 +42,6 @@ const Navbar = () => {
   const toggleLink = (link: string) => {
     setActiveLink(link)
   };
-
-
-  useEffect(() => {
-    const getUser = async () => {
-      if (uid) {
-        const userName = await getUserName(uid);
-        setUserName(userName);
-      }
-      if (data?.user?.name) {
-        setUserName(data?.user?.name);
-      }
-      if (data?.user?.image) {
-        setUserLogo(data?.user?.image);
-      }
-    };
-    getUser();
-  }, [user]);
 
   const headerStyle: CSSProperties = {
     top: scrollingDown ? `-${headerRef?.current?.clientHeight || 0}px` : "0",
@@ -218,7 +198,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
             >
-              <div className="space-y-1 px-2 pb-3 pt-2 flex flex-col">
+              <div className="space-y-1 px-2 pb-3 pt-2 flex flex-col items-center">
                 <Link
                   className={`text-gray-300 rounded-md px-3 py-2 text-sm font-medium`}
                   href="/"
@@ -249,81 +229,6 @@ const Navbar = () => {
           )}
         </AnimatePresence>
       </nav>
-
-
-
-
-
-
-
-
-
-      {/* <nav
-        classNameName="flex justify-between items-center bg-wh-900 w-full text-wh-10 px-10 py-4"
-        style={headerStyle}
-        ref={headerRef}
-      >
-        <button
-          classNameName="sm:hidden text-white"
-          onClick={handleMobileNavToggle}
-        >
-          ☰
-        </button>
-        <div classNameName="hidden sm:block">
-          <SocialLinks />
-        </div>
-        <div
-          classNameName={`${mobileNavOpen ? "block" : "hidden"
-            } sm:flex justify-between items-center gap-10`}
-        >
-          <Link href="/">Home</Link>
-          <Link href="/popular">Popular posts</Link>
-          {data && <Link href="/create-post">Create post</Link>}
-        </div>
-        <div classNameName="flex gap-2 items-center">
-          {userName && <p>{userName}</p>}
-          {userLogo && (
-            <Image
-              alt="user-logo"
-              src={userLogo}
-              width={40}
-              height={40}
-              classNameName="rounded-full"
-            />
-          )}
-          {userName ? (
-            <button classNameName="text-white" onClick={logOut}>
-              Logout
-            </button>
-          ) : (
-            <Link href="/signin">Log In</Link>
-          )}
-        </div>
-      </nav> */}
-      {/* <div style={mobileNavStyle}>
-        <Link href="/">Home</Link>
-        <Link href="/popular">Popular posts</Link>
-        {data && <Link href="/create-post">Create post</Link>}
-        {userName && <p>{userName}</p>}
-        {userLogo && (
-          <Image
-            alt="user-logo"
-            src={userLogo}
-            width={40}
-            height={40}
-            classNameName="rounded-full"
-          />
-        )}
-        {userName ? (
-          <button classNameName="text-white" onClick={logOut}>
-            Logout
-          </button>
-        ) : (
-          <Link href="/signin">Log In</Link>
-        )}
-      </div> */}
-
-
 
       <div className="sm:flex justify-between gap-8 mt-5 mb-4 mx-10">
         <div className="basis-2/3 mb-3 sm:mb-0 md:mt-3">

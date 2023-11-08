@@ -1,4 +1,4 @@
-import { Editor } from "@tiptap/react";
+import { Editor } from '@tiptap/react';
 
 export interface Post {
 	image: string;
@@ -9,18 +9,18 @@ export interface Post {
 	createdAt: string;
 	author: string;
 	content: string;
-	userId?: string
-	googleUid: string
-  postId: string
-  views?: number
+	userId?: string;
+	googleUid: string;
+	postId: string;
+	views?: number;
 }
 
 export type ArticleProps = {
-  contentError: string;
-  editor: Editor | null;
-  isEditable: boolean;
-  setContent: (content: string) => void;
-  title: string;
+	contentError: string;
+	editor: Editor | null;
+	isEditable: boolean;
+	setContent: (content: string) => void;
+	title: string;
 };
 
 export type EditorProps = {
@@ -34,15 +34,14 @@ export type EditorProps = {
 	setTempContent: (tempContent: string) => void;
 	editor: Editor | null;
 	post: Post;
-  postId: string
+	postId: string;
 };
 
 export type Comment = {
-  commentId: string;
-  postId: string;
-  text: string;
-  userName?: string;
-  userLogo?: string;
-  createdAt: string
+	commentId: string;
+	postId: string;
+	text: string;
+	userName?: string;
+	userLogo?: string;
+	createdAt: string;
 };
-

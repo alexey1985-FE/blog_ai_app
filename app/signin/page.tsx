@@ -19,19 +19,11 @@ export default function Signin() {
     e.preventDefault();
 
     const userExists = await checkIfFieldExists('email', email);
-    const hasPassword = Boolean(password); // Проверяем наличие пароля
+    const hasPassword = Boolean(password);
 
-    if (!userExists || !hasPassword) {
-      // Устанавливаем обе ошибки сразу
-      setError(`User with email '${email}' does not exist`);
-      setPasswordError('Invalid password');
-      return; // Выходим из функции
-    }
 
     setError('');
     setPasswordError('');
-
-    console.log('page.tsx hasPassword', hasPassword);
 
     try {
       const response = await signIn('credentials', {
@@ -45,13 +37,17 @@ export default function Signin() {
 
       if (response?.error) {
         setPasswordError('Invalid password');
-        console.log('page.tsx response', response);
       } else {
         setPasswordError('');
         router.push('/');
       }
     } catch (error) {
       console.log('Sign-in failed. Please try again.');
+    }
+
+    if (!userExists || !hasPassword) {
+      setError(`User with email '${email}' does not exist`);
+      return;
     }
   };
 

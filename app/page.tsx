@@ -20,18 +20,16 @@ export default async function Home() {
   const sortedPosts = posts.sort(compareCreatedAt);
 
   const currentDate = new Date();
-  currentDate.setHours(0, 0, 0, 0); // Установите время на полночь текущей даты
+  currentDate.setHours(0, 0, 0, 0);
 
-  // Отфильтруйте hotPosts
   const hotPosts = sortedPosts.filter((post) => {
     const postDate = new Date(post.createdAt);
     const timeDifference = currentDate.getTime() - postDate.getTime();
-    const daysDifference = timeDifference / (1000 * 3600 * 24); // Разница в днях
+    const daysDifference = timeDifference / (1000 * 3600 * 24);
 
     return daysDifference <= 30;
   });
 
-  // Остальная часть вашего кода
   const techPosts: Post[] = [];
   const travelPosts: Post[] = [];
   const otherPosts: Post[] = [];
@@ -42,7 +40,7 @@ export default async function Home() {
     } else if (post?.category === "Travel") {
       travelPosts.push(post);
     } else {
-      if (!hotPosts.includes(post) && !techPosts.includes(post) && !travelPosts.includes(post) && !otherPosts.includes(post)) {
+      if (!techPosts.includes(post) && !travelPosts.includes(post) && !otherPosts.includes(post)) {
         otherPosts.push(post);
       }
     }
@@ -50,7 +48,7 @@ export default async function Home() {
 
   return (
     <main className="px-5 sm:px-10 leading-7">
-      <Hot hotPosts={hotPosts} />
+      {hotPosts && <Hot hotPosts={hotPosts} />}
       <div className="md:flex gap-10 mb-5">
         <div className="basis-3/4">
           <Tech techPosts={techPosts} />

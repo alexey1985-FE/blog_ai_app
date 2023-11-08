@@ -19,7 +19,8 @@ export async function POST(request: Request) {
           Start writing sentences from a paragraph only if it makes sense.
           The text style should be like a magazine article.
           Write of the post only with ${title} name without ${role}.
-          Write text content according to the meaning of ${title} and ${role}.`,
+          Write text content according to the meaning of ${title} and ${role} and including them in the text.
+          `,
 				},
 				{
 					role: 'system',
