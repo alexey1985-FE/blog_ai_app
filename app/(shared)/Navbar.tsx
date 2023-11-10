@@ -6,7 +6,7 @@ import SocialLinks from "./SocialLinks";
 import Ad1 from "/public/assets/ad-1.jpg";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { MenuBtn } from "./MenuBtn";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import useMedia from "use-media";
@@ -25,6 +25,13 @@ const Navbar = () => {
   const { data, update } = useSession();
   const { userName, userLogo, setUserName, setUserLogo } = useGetUser()
   const router = useRouter();
+
+  const links = [
+    { href: "/", text: "Home", delay: 0.1 },
+    { href: "/popular", text: "Popular posts", delay: 0.2 },
+    { href: "/create-post", text: "Create post", delay: 0.3 },
+  ];
+  const controls = useAnimation();
 
   const logOut = async () => {
     try {
@@ -87,6 +94,14 @@ const Navbar = () => {
       document.removeEventListener("click", handleDocumentClick);
     };
   }, [logoutOpen]);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      controls.start({ opacity: 1, y: 0, maxHeight: data ? 200 : 80 });
+    } else {
+      controls.start({ opacity: 0, y: -10, maxHeight: 0 });
+    }
+  }, [mobileMenuOpen, controls]);
 
   return (
     <header className="mb-5 mt-20">
@@ -192,39 +207,66 @@ const Navbar = () => {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              className="sm:hidden"
+              className="sm:hidden space-y-1 px-2 flex flex-col items-center"
               id="mobile-menu"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
+              initial={{ opacity: 0, y: -50, maxHeight: 0, paddingBottom: '1rem' }}
+              animate={controls}
+              exit={{ opacity: 0, y: -50, maxHeight: 0, paddingBottom: 0 }}
+              transition={{ maxHeight: { duration: 0.2 } }}
             >
-              <div className="space-y-1 px-2 pb-3 pt-2 flex flex-col items-center">
-                <Link
+              {links.map((link, index) => (
+                link.href === "/create-post" && !data ? null : (
+                  <motion.a
+                    key={index}
+                    className={`text-gray-300 rounded-md px-3 py-2 text-sm font-medium`}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ delay: link.delay }}
+                  >
+                    {link.text}
+                  </motion.a>
+                )
+              ))}
+              {/* <motion.a
                   className={`text-gray-300 rounded-md px-3 py-2 text-sm font-medium`}
                   href="/"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ delay: 0.1 }}
                 >
                   Home
-                </Link>
+                </motion.a>
 
-                <Link
+                <motion.a
                   className={`text-gray-300 rounded-md px-3 py-2 text-sm font-medium `}
                   href="/popular"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ delay: 0.2 }}
                 >
                   Popular posts
-                </Link>
+                </motion.a>
 
                 {data && (
-                  <Link
+                  <motion.a
                     className={`text-gray-300 rounded-md px-3 py-2 text-sm font-medium`}
                     href="/create-post"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ delay: 0.3}}
                   >
                     Create post
-                  </Link>
-                )}
-              </div>
+                  </motion.a>
+                )} */}
             </motion.div>
           )}
         </AnimatePresence>

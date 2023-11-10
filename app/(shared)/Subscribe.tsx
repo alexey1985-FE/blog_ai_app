@@ -1,6 +1,7 @@
 'use client'
 import { SendEmail } from "@/utils/sendEmail";
 import useGetUser from "@/utils/useGetUser";
+import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import React, { useRef } from "react";
 import toast from "react-hot-toast";
@@ -36,9 +37,9 @@ const Subscribe = () => {
               required
               className="text-center w-5/6 min-w-[100px] px-5 py-2 border-2"
               placeholder="Enter Email Address" />
-            <button type="submit" className="bg-accent-red text-wh-10 font-semibold w-5/6 min-w-[100px] py-2 px-5 mt-3">
+            <motion.button whileTap={{ scale: 0.97 }} type="submit" className="bg-accent-red text-wh-10 font-semibold w-5/6 min-w-[100px] py-2 px-5 mt-3">
               SUBSCRIBE
-            </button>
+            </motion.button>
           </form></>
         : <p className="mt-3 text-base">
           Need to log in to make a subscription
