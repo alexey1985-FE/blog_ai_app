@@ -17,9 +17,9 @@ export async function POST(request: Request) {
           It is not necessary to write each sentence with a new heading and start on a new line.
           Write text with one heading and continue as regular text.
           Start writing sentences from a paragraph only if it makes sense.
-          The text style should be like a magazine article.
-          Write of the post only with ${title} name without ${role}.
-          Write text content according to the meaning of ${title} and ${role} and including them in the text.
+          Write the post as experienced writer using ${role} the styles of writing articles.
+          Write the post only with ${title} name without ${role}.
+          Write post content according to the meaning of ${title} and ${role} and including them in the text.
           `,
 				},
 				{

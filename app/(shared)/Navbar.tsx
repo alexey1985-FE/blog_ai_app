@@ -26,6 +26,8 @@ const Navbar = () => {
   const { userName, userLogo, setUserName, setUserLogo } = useGetUser()
   const router = useRouter();
 
+  // console.log('Navbar.tsx', data);
+
   const links = [
     { href: "/", text: "Home", delay: 0.1 },
     { href: "/popular", text: "Popular posts", delay: 0.2 },
@@ -152,7 +154,7 @@ const Navbar = () => {
               </div>
             </div>
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-2 items-center user-logo" >
                 {userName && <p className="text-gray-300 font-medium">{userName}</p>}
                 {userLogo ? (
                   <Image
@@ -230,43 +232,6 @@ const Navbar = () => {
                   </motion.a>
                 )
               ))}
-              {/* <motion.a
-                  className={`text-gray-300 rounded-md px-3 py-2 text-sm font-medium`}
-                  href="/"
-                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  Home
-                </motion.a>
-
-                <motion.a
-                  className={`text-gray-300 rounded-md px-3 py-2 text-sm font-medium `}
-                  href="/popular"
-                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  Popular posts
-                </motion.a>
-
-                {data && (
-                  <motion.a
-                    className={`text-gray-300 rounded-md px-3 py-2 text-sm font-medium`}
-                    href="/create-post"
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ delay: 0.3}}
-                  >
-                    Create post
-                  </motion.a>
-                )} */}
             </motion.div>
           )}
         </AnimatePresence>
@@ -289,6 +254,7 @@ const Navbar = () => {
                 (max-width: 1060px) 50vw,
                 33vw"
             style={{ objectFit: "cover" }}
+            priority
           />
         </div>
       </div>

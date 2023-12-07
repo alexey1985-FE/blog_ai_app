@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image';
+import DeleteModal from './DeleteModal';
 
 const Comments: React.FC<Comment> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
@@ -17,8 +18,10 @@ const Comments: React.FC<Comment> = ({ postId }) => {
   const [editCommentId, setEditCommentId] = useState<string | null>(null);
   const [editedComment, setEditedComment] = useState('');
   const [commentUserName, setCommentUserName] = useState<string | undefined>(undefined);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const trashIconRef = useRef<SVGSVGElement | null>(null);
   const { data } = useSession()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,6 +56,8 @@ const Comments: React.FC<Comment> = ({ postId }) => {
     await deleteComment(commentId);
     const updatedComments = await getComments(postId);
     setComments(updatedComments);
+    setEditCommentId(null);
+    setShowDeleteConfirmation(false)
   };
 
   const handleEditComment = (commentId: string, text: string) => {
@@ -87,7 +92,11 @@ const Comments: React.FC<Comment> = ({ postId }) => {
     (e: MouseEvent) => {
       const target = e.target as HTMLElement;
 
-      if (!target.closest('.edit-comment-container') && !target.matches('input')) {
+      if (
+        !target.closest('.edit-comment-container') &&
+        !target.matches('input') &&
+        !trashIconRef.current?.contains(target)
+      ) {
         setEditCommentId(null);
         document.removeEventListener('click', handleDocumentClick);
       }
@@ -116,14 +125,14 @@ const Comments: React.FC<Comment> = ({ postId }) => {
       <div className='mt-3'>
         {(comments.length !== 0 && data) || (comments.length !== 0 && !data) ? <h2>Comments</h2> : null}
         <div>
-          {comments.map((comment, index) => (
-            <div key={index} className="flex items-center">
+          {comments.map((comment) => (
+            <div key={comment.commentId} className="flex items-center">
               {comment.userLogo ?
                 <Image src={comment.userLogo} alt="user logo" width={40} height={40} className="m-0 mr-5 rounded-full translate-x-1" /> :
                 <UserCircleIcon className="w-14 h-14 mr-3 text-gray-300" />
               }
               <div className={`flex flex-col translate-y-3 edit-comment-container ${userName && comment.userName === userName ? 'hover:cursor-pointer' : ''}`}
-                onClick={(e) => {
+                onClick={() => {
                   if (userName && comment.userName === userName) {
                     handleEditComment(comment.commentId, comment.text);
                   } else { setEditCommentId(null) }
@@ -173,9 +182,18 @@ const Comments: React.FC<Comment> = ({ postId }) => {
               />
               <div className="space-x-2 flex min-w-[5rem] items-center">
                 <button onClick={() => handleUpdateComment(editCommentId)} type="button" className='mt-3 mr-3 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none'>Edit</button>
-                <TrashIcon onClick={() => handleDeleteComment(editCommentId)}
-                  className="text-red-600 hover:cursor-pointer w-6 h-6 translate-y-1.5" />
+                <TrashIcon onClick={() => setShowDeleteConfirmation(true)}
+                  className="text-red-600 hover:cursor-pointer w-6 h-6 translate-y-1.5"
+                  ref={trashIconRef}
+                />
               </div>
+              {showDeleteConfirmation && (
+                <DeleteModal
+                  handleDelete={() => handleDeleteComment(editCommentId)}
+                  deleteMessage={'Are you sure you want to delete this comment?'}
+                  setShowDeleteConfirmation={setShowDeleteConfirmation}
+                />
+              )}
             </>
           )}
         </form>}

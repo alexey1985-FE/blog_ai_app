@@ -4,15 +4,15 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/firebase-config';
-import { getUserName } from "@/utils/getUserNameByUid";
+import { getUserNameAndLogo } from '@/utils/getUserNameAndLogoByUid';
 
-type ExtendedUserType = User & { uid?: string, userName: string };
+type ExtendedUserType = User & { uid?: string; userName: string; userLogo: string };
 
 export const authOptions: AuthOptions = {
 	// Configure one or more authentication providers
 	pages: {
 		signIn: '/signin',
-    signOut: '/'
+		signOut: '/',
 	},
 	providers: [
 		CredentialsProvider({
@@ -32,14 +32,15 @@ export const authOptions: AuthOptions = {
 								email: user.email,
 							};
 
-              const userName = await getUserName(user?.uid);
-              firebaseUser.userName = userName;
+							const { userName, userLogo } = await getUserNameAndLogo(user?.uid);
+							firebaseUser.userName = userName || '';
+							firebaseUser.userLogo = userLogo || '';
 
 							return firebaseUser;
 						}
 						return null;
 					})
-					.catch((error) => console.log(error))
+					.catch((error) => console.log(error));
 			},
 		}),
 		GoogleProvider({
@@ -51,20 +52,23 @@ export const authOptions: AuthOptions = {
 		async session({ session, token }) {
 			(session.user as unknown as ExtendedUserType).uid = token.sub;
 
-      const firebaseUser = (session.user as unknown as ExtendedUserType);
+			const firebaseUser = session.user as unknown as ExtendedUserType;
 
-      if (!firebaseUser.userName) {
-        const userName = await getUserName(firebaseUser.uid as string);
-        firebaseUser.userName = userName || '';
-      }
+			if (!firebaseUser.userName) {
+				const { userName, userLogo } = await getUserNameAndLogo(
+					firebaseUser.uid as string,
+				);
+				firebaseUser.userName = userName || '';
+				firebaseUser.userLogo = userLogo || '';
+			}
 
 			return session;
 		},
 	},
-  session: {
-    strategy: 'jwt',
-    maxAge: 4 * 60 * 60 // 4 hours
-  },
+	session: {
+		strategy: 'jwt',
+		maxAge: 4 * 60 * 60, // 4 hours
+	},
 };
 
 const handler = NextAuth(authOptions);

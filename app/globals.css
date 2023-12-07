@@ -39,6 +39,10 @@ article h1 {
 article p:not(:first-child) {
 	font-size: 0.875rem;
 	@media (min-width: 768px) {
-		font-size: 1.063rem;
+		font-size: 1.3rem;
 	}
+}
+
+.user-logo img {
+	height: revert-layer;
 }

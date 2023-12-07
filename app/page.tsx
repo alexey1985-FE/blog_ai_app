@@ -6,10 +6,10 @@ import Sidebar from "app/(shared)/Sidebar";
 import { Post } from "./types";
 import { getPosts } from "./utils/fetchPosts";
 import { revalidatePath } from "next/cache";
+import { useEffect } from "react";
 
 export default async function Home() {
   const posts: Post[] = await getPosts();
-  revalidatePath('/')
 
   const compareCreatedAt = (a: Post, b: Post) => {
     const dateA = new Date(a.createdAt);
@@ -45,6 +45,10 @@ export default async function Home() {
       }
     }
   });
+
+  // useEffect(() => {
+  //   revalidatePath('/')
+  // }, [])
 
   return (
     <main className="px-5 sm:px-10 leading-7">

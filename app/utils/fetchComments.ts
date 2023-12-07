@@ -28,7 +28,7 @@ export const addComment = async (
     userName,
     userLogo,
     commentId: '',
-    createdAt: Timestamp.now() 
+    createdAt: Timestamp.now() as unknown as string
   };
 
   const docRef = await addDoc(commentsCollection, newComment);
@@ -84,10 +84,10 @@ export const deleteComment = async (commentId: string): Promise<void> => {
 export const deleteCommentsForPost = async (postId: string) => {
   try {
     const commentsRef = collection(db, "comments");
-    
+
     // Создаем запрос, чтобы выбрать все комментарии для указанного поста
     const q = query(commentsRef, where("postId", "==", postId));
-    
+
     // Получаем все комментарии для поста
     const querySnapshot = await getDocs(q);
 

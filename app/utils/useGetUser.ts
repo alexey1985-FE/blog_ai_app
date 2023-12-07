@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { getUserName } from './getUserNameByUid';
+import { getUserNameAndLogo } from './getUserNameAndLogoByUid';
 
 const useGetUser = () => {
 	const [userName, setUserName] = useState('');
 	const [userLogo, setUserLogo] = useState('');
 
 	const { data } = useSession();
-	const user = data?.user?.email;
 	const uid = data?.user?.uid;
 
 	useEffect(() => {
 		const getUser = async () => {
 			if (uid) {
-				const userName = await getUserName(uid);
+				const { userName, userLogo } = await getUserNameAndLogo(uid);
 				setUserName(userName);
+				setUserLogo(userLogo);
 			}
 			if (data?.user?.name) {
 				setUserName(data?.user?.name);
@@ -24,7 +24,7 @@ const useGetUser = () => {
 			}
 		};
 		getUser();
-	}, [user]);
+	}, [uid, data?.user?.name, data?.user?.image]);
 
 	return { userName, userLogo, setUserName, setUserLogo };
 };

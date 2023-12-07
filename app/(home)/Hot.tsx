@@ -4,11 +4,10 @@ import { Post } from "@/types";
 import Card from "@/(shared)/Card";
 import useMedia from "use-media";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay } from 'swiper/modules';
-import 'swiper/css/bundle';
-import 'swiper/css/navigation';
-import 'swiper/css/autoplay'
+import { Autoplay } from 'swiper/modules';
 import { useGroupedPosts } from "@/utils/groupPosts";
+import 'swiper/css/bundle';
+import 'swiper/css/autoplay'
 
 type Props = {
   hotPosts: Post[];
@@ -18,7 +17,6 @@ const Hot = ({ hotPosts }: Props) => {
   const isMobile = useMedia('(max-width: 767px)');
   const groupSize = isMobile ? 1 : 4;
   const groupedHotPosts = useGroupedPosts(hotPosts, groupSize);
-
 
   return (
     <section className="pt-3 pb-10">
@@ -32,12 +30,12 @@ const Hot = ({ hotPosts }: Props) => {
 
       <Swiper
         grabCursor
-        modules={[Navigation, Autoplay]}
+        modules={[Autoplay]}
         spaceBetween={30}
         slidesPerView={1}
         className="max-w-[100vw]"
         autoplay={{
-          delay: 1500,
+          delay: 5000,
           pauseOnMouseEnter: true,
         }}
         speed={1500}

@@ -16,6 +16,8 @@ import { EyeIcon } from '@heroicons/react/24/solid'
 import { snippetGenerate } from "@/utils/snippetGenerate";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { useRouter } from "next/navigation";
+
 
 type Props = {
   post: Post;
@@ -38,6 +40,8 @@ const Content = ({ post, postId }: Props) => {
   const [newImage, setNewImage] = useState<string | null>(null);
 
   const { data } = useSession()
+  const router = useRouter();
+
   const userAuthId = data?.user?.uid
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -73,13 +77,19 @@ const Content = ({ post, postId }: Props) => {
       }),
     });
 
-    await response.json();
+    await response.json()
+
+    if (response.ok) {
+      router.refresh()
+      if (editor) {
+        editor.chain().focus().setContent(content).run();
+      }
+    }
 
     handleIsEditable(false);
     setTempTitle("");
     setTempContent("");
   };
-
 
   const handleIsEditable = (bool: boolean) => {
     setIsEditable(bool);
@@ -88,12 +98,29 @@ const Content = ({ post, postId }: Props) => {
 
   const handleOnChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (title) setTitleError("");
-    setTitle(e.target.value);
+
+    if (editor && editor.getHTML) {
+      const updatedTitle = e.target.value;
+      const updatedContent = editor.getHTML().replace(/<h1>(.*?)<\/h1>/, `<h1>${updatedTitle}</h1>`);
+
+      setTitle(updatedTitle);
+      setContent(updatedContent);
+    }
   };
+
 
   const handleOnChangeContent = ({ editor }: any) => {
     if (!(editor as Editor).isEmpty) setContentError("");
-    setContent((editor as Editor).getHTML());
+
+    const currentContent = (editor as Editor).getHTML();
+
+    if (!currentContent.includes(content)) {
+      setContent(currentContent);
+      setTitle((editor as Editor).getHTML().match(/<h1>(.*?)<\/h1>/)?.[1] || '');
+
+      console.log('Content.tsx', (editor as Editor).getHTML().match(/<h1>(.*?)<\/h1>/)?.[1] || '');
+    }
+    setContent(currentContent);
   };
 
   const editor = useEditor({
@@ -108,7 +135,6 @@ const Content = ({ post, postId }: Props) => {
       },
     },
   });
-
 
   const handleEditImage = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -131,6 +157,7 @@ const Content = ({ post, postId }: Props) => {
       setNewImage('');
     }
   };
+
 
   useEffect(() => {
     const postRef = doc(db, "posts", postId);
@@ -175,6 +202,7 @@ const Content = ({ post, postId }: Props) => {
       incrementViews();
     }
   }, [userAuthId, postId]);
+
 
   return (
     <div className="prose w-full max-w-full mb-10">
@@ -228,7 +256,7 @@ const Content = ({ post, postId }: Props) => {
             src={newImage || post.image}
             sizes="(max-width: 480px) 100vw, (max-width: 768px) 85vw, (max-width: 1060px) 75vw, 60vw"
             style={{ objectFit: 'cover' }}
-            priority
+            priority={true}
           />
           {isEditable && (
             <>

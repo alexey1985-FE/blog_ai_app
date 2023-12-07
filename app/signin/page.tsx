@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { checkIfFieldExists } from '@/utils/checkIfFieldExists'
 import Link from 'next/link'
+import { motion } from "framer-motion";
 
 export default function Signin() {
   const [email, setEmail] = useState("");
@@ -20,7 +21,6 @@ export default function Signin() {
 
     const userExists = await checkIfFieldExists('email', email);
     const hasPassword = Boolean(password);
-
 
     setError('');
     setPasswordError('');
@@ -142,20 +142,22 @@ export default function Signin() {
           </div>
 
           <div>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.97 }}
               type="submit"
               disabled={!email || !password}
               className="disabled:opacity-40 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
               Sign in
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
               type="button"
               onClick={handleGoogleSignIn}
               className="mt-3 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
               Sign in with Google
-            </button>
+            </motion.button>
           </div>
         </div>
 

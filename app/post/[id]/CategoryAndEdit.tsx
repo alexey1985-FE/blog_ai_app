@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import { deleteCommentsForPost } from "@/utils/fetchComments";
 import { deletePost } from "@/utils/fetchPosts";
 import { useRouter } from "next/navigation";
+import DeleteModal from "@/(shared)/DeleteModal";
+import { revalidatePath } from "next/cache";
 
 const CategoryAndEdit = ({
   isEditable,
@@ -42,6 +44,7 @@ const CategoryAndEdit = ({
       await deletePost(postId);
 
       router.refresh();
+      revalidatePath('/')
       router.push("/");
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -81,25 +84,11 @@ const CategoryAndEdit = ({
       )}
 
       {showDeleteConfirmation && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 animate-fade-in">
-          <div className="bg-white p-8 rounded shadow-lg animate-fade-in">
-            <p className="text-xl mb-4 text-center">Sure you want to delete this post?</p>
-            <div className="flex justify-center">
-              <button
-                className="mt-3 mr-3 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none"
-                onClick={handleDeletePost}
-              >
-                Yes
-              </button>
-              <button
-                className="mt-3 mr-3 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus:outline-none"
-                onClick={() => setShowDeleteConfirmation(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeleteModal
+          handleDelete={handleDeletePost}
+          deleteMessage={'Are you sure you want to delete this post?'}
+          setShowDeleteConfirmation={setShowDeleteConfirmation}
+        />
       )}
     </div>
   );

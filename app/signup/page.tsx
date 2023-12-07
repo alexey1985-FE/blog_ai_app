@@ -1,20 +1,32 @@
 'use client';
-import { auth, db } from '@/firebase-config';
+import { auth, db, storage } from '@/firebase-config';
 import { signIn } from 'next-auth/react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { checkIfFieldExists } from '@/utils/checkIfFieldExists';
 import { useRouter } from "next/navigation";
+import { motion } from 'framer-motion';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 export default function Signup() {
   const [userName, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userLogo, setUserLogo] = useState<File | null>(null);
   const [passwordAgain, setPasswordAgain] = useState('');
   const [error, setError] = useState('');
 
   const router = useRouter();
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+
+    if (files && files.length > 0) {
+      const file = files[0];
+      setUserLogo(file);
+    }
+  };
 
   const signup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -42,6 +54,13 @@ export default function Signup() {
           uid,
         };
 
+        if (userLogo) {
+          const storageRef = ref(storage, `userLogos/${uid}`);
+          await uploadBytes(storageRef, userLogo);
+          const logoUrl = await getDownloadURL(storageRef);
+          userDoc.userLogo = logoUrl;
+        }
+
         await setDoc(doc(db, 'users', uid), userDoc);
         signIn('credentials', { email, password, redirect: false, callbackUrl: '/' });
         router.push('/')
@@ -64,7 +83,7 @@ export default function Signup() {
 
           <div>
             <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
-              Full name
+              Full name<span aria-hidden="true" className='text-rose-600'>*</span>
             </label>
             <div className="mt-2">
               <input
@@ -80,7 +99,7 @@ export default function Signup() {
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-              Email
+              Email<span aria-hidden="true" className='text-rose-600'>*</span>
             </label>
             <div className="mt-2">
               <input
@@ -94,11 +113,10 @@ export default function Signup() {
               />
             </div>
           </div>
-
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                Password
+                Password<span aria-hidden="true" className='text-rose-600'>*</span>
               </label>
             </div>
             <div className="mt-2">
@@ -129,15 +147,30 @@ export default function Signup() {
               />
             </div>
           </div>
+          <div>
+            <label htmlFor="userLogo" className="block text-sm font-medium leading-6 text-gray-900">
+              User photo
+            </label>
+            <div className="mt-2">
+              <input
+                id="userLogo"
+                name="userLogo"
+                type="file"
+                onChange={handleFileChange}
+                className="block w-full rounded-md border-2 border-indigo-200"
+              />
+            </div>
+          </div>
 
           <div>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.97 }}
               disabled={(!email || !password || !passwordAgain) || (password !== passwordAgain)}
               type="submit"
               className="disabled:opacity-40 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-900 shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
               Sign Up
-            </button>
+            </motion.button>
           </div>
           {error && (
             <p className="text-red-500 text-sm -translate-y-3">{error}</p>
