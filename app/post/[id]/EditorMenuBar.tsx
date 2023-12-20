@@ -26,7 +26,7 @@ const EditorMenuBar = ({ editor, createAiContent }: Props) => {
           className={
             editor.isActive('heading', { level: 1 })
               ? 'bg-wh-500 text-wh-50 p-1 rounded-md'
-              : 'p-1'
+              : 'p-1 text-black'
           }
         >
           H<span className='text-xs'>1</span>
@@ -36,8 +36,8 @@ const EditorMenuBar = ({ editor, createAiContent }: Props) => {
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={
             editor.isActive('heading', { level: 2 })
-              ? 'bg-wh-500 text-wh-50 p-1 rounded-md'
-              : 'p-1'
+              ? 'bg-wh-500 text-wh-50  p-1 rounded-md'
+              : 'p-1 text-black'
           }
         >
           H<span className='text-xs'>2</span>
@@ -48,7 +48,7 @@ const EditorMenuBar = ({ editor, createAiContent }: Props) => {
           className={
             editor.isActive('heading', { level: 3 })
               ? 'bg-wh-500 text-wh-50 p-1 rounded-md'
-              : 'p-1'
+              : 'p-1 text-black'
           }
         >
           H<span className='text-xs'>3</span>
@@ -57,7 +57,7 @@ const EditorMenuBar = ({ editor, createAiContent }: Props) => {
           type='button'
           onClick={() => editor.chain().focus().setParagraph().run()}
           className={
-            editor.isActive('paragraph') ? 'bg-wh-500 text-wh-50 p-1 rounded-md' : 'p-1'
+            editor.isActive('paragraph') ? 'bg-wh-500 text-wh-50 p-1 rounded-md' : 'p-1 text-black'
           }
         >
           paragraph
@@ -67,7 +67,7 @@ const EditorMenuBar = ({ editor, createAiContent }: Props) => {
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editor.can().chain().focus().toggleBold().run()}
           className={
-            editor.isActive('bold') ? 'bg-wh-500 text-wh-50 p-1 rounded-md' : 'p-1'
+            editor.isActive('bold') ? 'bg-wh-500 text-wh-50 p-1 rounded-md' : 'p-1 text-black'
           }
         >
           <b>B</b>
@@ -77,14 +77,14 @@ const EditorMenuBar = ({ editor, createAiContent }: Props) => {
           onClick={() => editor.chain().focus().toggleItalic().run()}
           disabled={!editor.can().chain().focus().toggleItalic().run()}
           className={
-            editor.isActive('italic') ? 'bg-wh-500 text-wh-50 p-1 rounded-md' : 'p-1'
+            editor.isActive('italic') ? 'bg-wh-500 text-wh-50 p-1 rounded-md' : 'p-1 text-black'
           }
         >
           <i>I</i>
         </button>
       </div>
       {pageName === 'create-post' && (
-        <button type='button' onClick={createAiContent} className="flex items-center bg-gray-200 p-2 rounded-lg">
+        <button type='button' onClick={createAiContent} className="flex items-center bg-gray-200 p-2 rounded-lg dark:text-black">
           Generate with AI
           <RocketLaunchIcon className='h-8 w-8 text-indigo-500 ml-2 hover:text-indigo-400' />
         </button>

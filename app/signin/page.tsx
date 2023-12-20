@@ -79,7 +79,7 @@ export default function Signin() {
       autoComplete="off"
     >
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+        <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-wh-50">
           Sign in to your account
         </h2>
       </div>
@@ -89,7 +89,7 @@ export default function Signin() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-sm font-medium leading-6 text-gray-900 dark:text-wh-50"
             >
               Email
             </label>
@@ -113,7 +113,7 @@ export default function Signin() {
             <div className="flex items-center justify-between">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-wh-50"
               >
                 Password
               </label>
@@ -167,6 +167,5 @@ export default function Signin() {
         </p>
       </div>
     </form>
-
   );
 }

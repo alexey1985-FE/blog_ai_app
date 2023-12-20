@@ -27,6 +27,7 @@ const CategoryAndEdit = ({
   const router = useRouter();
 
   const handleEnableEdit = () => {
+    editor?.commands.focus('start')
     handleIsEditable(!isEditable);
     setTempTitle(title);
     setTempContent(editor?.getHTML() || "");

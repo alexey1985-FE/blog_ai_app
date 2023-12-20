@@ -5,8 +5,6 @@ import Other from "app/(shared)/Other";
 import Sidebar from "app/(shared)/Sidebar";
 import { Post } from "./types";
 import { getPosts } from "./utils/fetchPosts";
-import { revalidatePath } from "next/cache";
-import { useEffect } from "react";
 
 export default async function Home() {
   const posts: Post[] = await getPosts();
@@ -27,7 +25,7 @@ export default async function Home() {
     const timeDifference = currentDate.getTime() - postDate.getTime();
     const daysDifference = timeDifference / (1000 * 3600 * 24);
 
-    return daysDifference <= 30;
+    return daysDifference <= 60;
   });
 
   const techPosts: Post[] = [];
@@ -45,10 +43,6 @@ export default async function Home() {
       }
     }
   });
-
-  // useEffect(() => {
-  //   revalidatePath('/')
-  // }, [])
 
   return (
     <main className="px-5 sm:px-10 leading-7">

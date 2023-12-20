@@ -13,7 +13,7 @@ const Subscribe = () => {
 
   return (
     <div className="text-center bg-wh-10 px-5 py-10">
-      <h4 className="font-semibold text-base">Subscribe to our Newsletter</h4>
+      <h4 className="font-semibold text-base dark:text-black">Subscribe to our Newsletter</h4>
       {data ?
         <>
           <p className="text-wh-500 my-3 w-5/6 mx-auto">
@@ -41,7 +41,7 @@ const Subscribe = () => {
               SUBSCRIBE
             </motion.button>
           </form></>
-        : <p className="mt-3 text-base">
+        : <p className="mt-3 text-base dark:text-wh-900">
           Need to log in to make a subscription
         </p>}
     </div>

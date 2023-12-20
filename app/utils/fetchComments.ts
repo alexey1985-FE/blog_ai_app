@@ -85,13 +85,10 @@ export const deleteCommentsForPost = async (postId: string) => {
   try {
     const commentsRef = collection(db, "comments");
 
-    // Создаем запрос, чтобы выбрать все комментарии для указанного поста
     const q = query(commentsRef, where("postId", "==", postId));
 
-    // Получаем все комментарии для поста
     const querySnapshot = await getDocs(q);
 
-    // Удаляем каждый комментарий
     querySnapshot.forEach(async (doc) => {
       await deleteDoc(doc.ref);
     });

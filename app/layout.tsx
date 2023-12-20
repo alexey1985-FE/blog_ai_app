@@ -5,6 +5,7 @@ import Navbar from "./(shared)/Navbar";
 import Footer from "./(shared)/Footer";
 import SessionProvider from "./SessionProvider";
 import { Toaster } from 'react-hot-toast'
+import Provider from "./ThemeProvder";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -39,9 +40,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               }
             }
           }} />
-          <Navbar />
-          {children}
-          <Footer />
+          <Provider>
+            <Navbar />
+            {children}
+            <Footer />
+          </Provider>
         </SessionProvider>
       </body>
     </html>

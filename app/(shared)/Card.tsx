@@ -22,7 +22,7 @@ const Card = ({
   isSmallCard = false,
   isLongForm = false,
 }: Props) => {
-  const { title, author, createdAt, image, snippet } = post || {};
+  const { title, author, createdAt, image, snippet } = post;
   const pathName = usePathname();
   const pageName = pathName.split('/').pop();
 
@@ -72,7 +72,7 @@ const Card = ({
                   fill
                   alt="tech"
                   src={image}
-                  
+
                   sizes="(max-width: 480px) 100vw,
                     (max-width: 768px) 75vw,
                     (max-width: 1060px) 50vw,
@@ -105,11 +105,11 @@ const Card = ({
               </h4>
             </Link>}
 
-            <div className={`${isSmallCard ? "my-2" : "flex my-3"} gap-3`}>
+            <div className={`${isSmallCard ? "my-2" : "my-3"} flex flex-wrap gap-3`}>
               <h5 className="font-semibold text-xs">{author}</h5>
               <h6 className="text-wh-300 text-xs">{formattedDate}</h6>
             </div>
-            <p className={`text-wh-500 ${isLongForm ? "line-clamp-5" : "line-clamp-3"}`}>
+            <p className={`text-wh-500 dark:text-wh-100 ${isLongForm ? "line-clamp-5" : "line-clamp-3"}`}>
               {snippet}
             </p>
           </div>

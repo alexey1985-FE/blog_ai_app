@@ -1,6 +1,6 @@
 import { collection, getDocs, query, orderBy, doc, getDoc, deleteDoc } from "firebase/firestore";
-import { db } from "@/firebase-config";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
+import { db } from "@/firebase-config";
 import { Post } from "@/types";
 
 export const getPosts = async () => {

@@ -179,7 +179,7 @@ const CreatePost = () => {
               <div className='col-span-full'>
                 <label
                   htmlFor='title'
-                  className='block text-sm font-medium leading-6 text-gray-900'
+                  className='block text-sm font-medium leading-6 text-gray-900 dark:text-wh-100'
                 >
                   Title
                 </label>
@@ -197,7 +197,7 @@ const CreatePost = () => {
               <div className='col-span-full'>
                 <label
                   htmlFor='category'
-                  className='block text-sm font-medium leading-6 text-gray-900'
+                  className='block text-sm font-medium leading-6 text-gray-900 dark:text-wh-100'
                 >
                   Category
                 </label>
@@ -213,7 +213,7 @@ const CreatePost = () => {
               </div>
 
               <div className='col-span-full'>
-                <p className='block text-sm font-medium leading-6 text-gray-900 mb-2'>
+                <p className='block text-sm font-medium leading-6 text-gray-900 mb-2 dark:text-wh-100'>
                   Description
                 </p>
 
@@ -228,7 +228,7 @@ const CreatePost = () => {
                 <div className='col-span-full'>
                   <label
                     htmlFor='image'
-                    className='block text-sm font-medium leading-6 text-gray-900'
+                    className='block text-sm font-medium leading-6 text-gray-900 dark:text-wh-100'
                   >
                     Image
                   </label>

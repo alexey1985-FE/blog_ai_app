@@ -123,7 +123,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
   return (
     <>
       <div className='mt-3'>
-        {(comments.length !== 0 && data) || (comments.length !== 0 && !data) ? <h2>Comments</h2> : null}
+        {(comments.length !== 0 && data) || (comments.length !== 0 && !data) ? <h2 className='dark:text-indigo-400'>Comments</h2> : null}
         <div>
           {comments.map((comment) => (
             <div key={comment.commentId} className="flex items-center">
@@ -141,10 +141,10 @@ const Comments: React.FC<Comment> = ({ postId }) => {
                 {comment.createdAt ?
                   <>
                     <div className="flex">
-                      <h4 className="m-0">{comment.userName}</h4>
-                      <i className='m-0 ml-3 -translate-y-0.5 text-gray-500'>{comment.createdAt.toString()}</i>
+                      <h4 className="m-0 dark:text-wh-10">{comment.userName}</h4>
+                      <i className='m-0 ml-3 -translate-y-0.5 text-gray-500 dark:text-wh-100'>{comment.createdAt.toString()}</i>
                     </div>
-                    <p className="m-0 mb-3 text-gray-500">{comment.text}</p>
+                    <p className="m-0 mb-3 text-gray-500 dark:text-wh-100">{comment.text}</p>
                   </>
                   :
                   <>

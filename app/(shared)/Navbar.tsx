@@ -11,6 +11,9 @@ import { MenuBtn } from "./MenuBtn";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import useMedia from "use-media";
 import useGetUser from "@/utils/useGetUser";
+import { useTheme } from "next-themes";
+import { FiMoon } from "react-icons/fi";
+import { BsSun } from "react-icons/bs";
 
 const Navbar = () => {
   const [scrollingDown, setScrollingDown] = useState(false);
@@ -19,6 +22,9 @@ const Navbar = () => {
   const [activeLink, setActiveLink] = useState("");
   const [logoutOpen, setLogoutOpen] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+
   const headerRef = useRef<HTMLDivElement | null>(null);
   const isMobile = useMedia('(max-width: 767px)');
 
@@ -26,7 +32,6 @@ const Navbar = () => {
   const { userName, userLogo, setUserName, setUserLogo } = useGetUser()
   const router = useRouter();
 
-  // console.log('Navbar.tsx', data);
 
   const links = [
     { href: "/", text: "Home", delay: 0.1 },
@@ -105,6 +110,14 @@ const Navbar = () => {
     }
   }, [mobileMenuOpen, controls]);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <header className="mb-5 mt-20">
       <nav className="bg-gray-900" style={headerStyle} ref={headerRef}>
@@ -153,55 +166,64 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <div className="flex gap-2 items-center user-logo" >
-                {userName && <p className="text-gray-300 font-medium">{userName}</p>}
-                {userLogo ? (
-                  <Image
-                    alt="user-logo"
-                    src={userLogo}
-                    width={40}
-                    height={40}
-                    className="rounded-full hover:cursor-pointer"
-                    onClick={handleLogOut}
-                    tabIndex={0}
-                    aria-labelledby="logout"
-                    onKeyUp={(e) => {
-                      if (e.key === "Enter") {
-                        handleLogOut();
-                      }
-                    }}
-                  />
-                ) : !userLogo && userName ? <UserCircleIcon className="w-10 h-10 text-gray-300 hover:cursor-pointer" onClick={handleLogOut} /> : null}
-
-                {userName ? (
-                  <div className="relative">
-                    <AnimatePresence>
-                      {logoutOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.95 }}
-                          transition={{ duration: 0.1, type: "tween" }}
-                          className="absolute top-2 right-3 z-10 w-40 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"
-                          role="menu"
-                          aria-orientation="vertical"
-                          aria-labelledby="logout"
-                          tabIndex={0}
-                        >
-                          <div className="py-1" role="none">
-                            <Link href="/" onClick={logOut} className="text-gray-700 block px-4 w-full py-2 text-sm hover:bg-gray-300" role="menuitem" tabIndex={-1} id="menu-item-0">
-                              Log out
-                            </Link>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
+            <div className="flex items-center">
+              <div className="mr-4 sm:mr-0">
+                {theme === "dark" ? (
+                  <BsSun size={23} cursor="pointer" onClick={() => setTheme("light")} />
                 ) : (
-                  <Link className="text-gray-300 font-medium hover:bg-gray-700 hover:text-white" href="/signin">Log In</Link>
+                  <FiMoon style={{ color: 'white' }} size={23} cursor="pointer" onClick={() => setTheme("dark")} />
                 )}
+              </div>
+              <div className="inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <div className="flex gap-2 items-center user-logo" >
+                  {userName && <p className="text-gray-300 font-medium">{userName}</p>}
+                  {userLogo ? (
+                    <Image
+                      alt="user-logo"
+                      src={userLogo}
+                      width={40}
+                      height={40}
+                      className="rounded-full hover:cursor-pointer"
+                      onClick={handleLogOut}
+                      tabIndex={0}
+                      aria-labelledby="logout"
+                      onKeyUp={(e) => {
+                        if (e.key === "Enter") {
+                          handleLogOut();
+                        }
+                      }}
+                    />
+                  ) : !userLogo && userName ? <UserCircleIcon className="w-10 h-10 text-gray-300 hover:cursor-pointer" onClick={handleLogOut} /> : null}
+
+                  {userName ? (
+                    <div className="relative">
+                      <AnimatePresence>
+                        {logoutOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.1, type: "tween" }}
+                            className="absolute top-2 right-3 z-10 w-40 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+                            role="menu"
+                            aria-orientation="vertical"
+                            aria-labelledby="logout"
+                            tabIndex={0}
+                          >
+                            <div className="py-1" role="none">
+                              <Link href="/" onClick={logOut} className="text-gray-700 block px-4 w-full py-2 text-sm hover:bg-gray-300" role="menuitem" tabIndex={-1} id="menu-item-0">
+                                Log out
+                              </Link>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                  ) : (
+                    <Link className="text-gray-300 font-medium hover:bg-gray-700 hover:text-white" href="/signin">Log In</Link>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -239,7 +261,7 @@ const Navbar = () => {
 
       <div className="sm:flex justify-between gap-8 mt-5 mb-4 mx-10">
         <div className="basis-2/3 mb-3 sm:mb-0 md:mt-3">
-          <h2 className="font-bold text-3xl md:text-5xl">BLOG OF THE FUTURE</h2>
+          <h2 className="font-bold text-3xl md:text-5xl dark:text-indigo-400">BLOG OF THE FUTURE</h2>
           <p className="text-sm mt-3">
             Blog dedicated towards AI and generation and job automation
           </p>
@@ -258,7 +280,7 @@ const Navbar = () => {
           />
         </div>
       </div>
-      <hr className="border-1 mx-10"></hr>
+      <hr className="border-1 mx-10" />
     </header>
   );
 };

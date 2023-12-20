@@ -8,6 +8,7 @@ import { checkIfFieldExists } from '@/utils/checkIfFieldExists';
 import { useRouter } from "next/navigation";
 import { motion } from 'framer-motion';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { UserDoc } from 'next-auth';
 
 export default function Signup() {
   const [userName, setUsername] = useState('');
@@ -48,7 +49,7 @@ export default function Signup() {
         const user = userCredential.user;
         const uid = user.uid;
 
-        const userDoc = {
+        const userDoc: UserDoc = {
           userName,
           email: user.email,
           uid,
@@ -73,7 +74,7 @@ export default function Signup() {
   return (
     <form className="flex h-100 flex-1 flex-col justify-center px-6 pb-8 lg:px-8 -translate-y-8" onSubmit={signup}>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+        <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-wh-50">
           Sign up
         </h2>
       </div>
@@ -82,7 +83,7 @@ export default function Signup() {
         <div className="space-y-4">
 
           <div>
-            <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+            <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900 dark:text-wh-50">
               Full name<span aria-hidden="true" className='text-rose-600'>*</span>
             </label>
             <div className="mt-2">
@@ -98,7 +99,7 @@ export default function Signup() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900 dark:text-wh-50">
               Email<span aria-hidden="true" className='text-rose-600'>*</span>
             </label>
             <div className="mt-2">
@@ -115,7 +116,7 @@ export default function Signup() {
           </div>
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900 dark:text-wh-50">
                 Password<span aria-hidden="true" className='text-rose-600'>*</span>
               </label>
             </div>
@@ -132,7 +133,7 @@ export default function Signup() {
           </div>
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900 dark:text-wh-50">
                 Confirm Password
               </label>
             </div>
@@ -148,7 +149,7 @@ export default function Signup() {
             </div>
           </div>
           <div>
-            <label htmlFor="userLogo" className="block text-sm font-medium leading-6 text-gray-900">
+            <label htmlFor="userLogo" className="block text-sm font-medium leading-6 text-gray-900 dark:text-wh-50">
               User photo
             </label>
             <div className="mt-2">
@@ -167,7 +168,7 @@ export default function Signup() {
               whileTap={{ scale: 0.97 }}
               disabled={(!email || !password || !passwordAgain) || (password !== passwordAgain)}
               type="submit"
-              className="disabled:opacity-40 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-900 shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+              className="disabled:opacity-40 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-900 shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:text-white"
             >
               Sign Up
             </motion.button>

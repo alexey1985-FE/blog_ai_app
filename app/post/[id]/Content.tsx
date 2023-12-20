@@ -96,14 +96,35 @@ const Content = ({ post, postId }: Props) => {
     editor?.setEditable(bool);
   };
 
+  function removeTags(input: string): string {
+    return input.replace(/<\/?[^>]+(>|$)/g, "");
+  }
+
+
   const handleOnChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (title) setTitleError("");
 
     if (editor && editor.getHTML) {
       const updatedTitle = e.target.value;
-      const updatedContent = editor.getHTML().replace(/<h1>(.*?)<\/h1>/, `<h1>${updatedTitle}</h1>`);
+      const currentContent = editor.getHTML();
 
-      setTitle(updatedTitle);
+      const paragraphs = currentContent.match(/<(h[1-3]|p)>(.*?)<\/(h[1-3]|p)>/g) || [];
+      const isFirstTitleParagraph = paragraphs[0]?.includes('<p>');
+
+      let updatedContent = '';
+      if (isFirstTitleParagraph) {
+        updatedContent = currentContent.replace(/<p>(.*?)<\/p>/, `<p>${updatedTitle}</p>`);
+      } else {
+        updatedContent = currentContent.replace(/<(h[1-3])>(.*?)<\/(h[1-3])>/, `<$1>${updatedTitle}</$3>`);
+      }
+
+      if (editor.isActive('paragraph') && !editor.isFocused && isFirstTitleParagraph) {
+        setTitle(removeTags(updatedContent.match(/<p>(.*?)<\/p>/)?.[1] || ''));
+      } else {
+        setTitle(removeTags(updatedContent.match(/<h[1-3]>(.*?)<\/h[1-3]>/)?.[1] || ''));
+      }
+
+      setTitle(updatedTitle)
       setContent(updatedContent);
     }
   };
@@ -115,13 +136,16 @@ const Content = ({ post, postId }: Props) => {
     const currentContent = (editor as Editor).getHTML();
 
     if (!currentContent.includes(content)) {
-      setContent(currentContent);
-      setTitle((editor as Editor).getHTML().match(/<h1>(.*?)<\/h1>/)?.[1] || '');
+      const firstParagraph = currentContent.match(/<(h[1-3]|p)>(.*?)<\/(h[1-3]|p)>/)?.[0] || '';
 
-      console.log('Content.tsx', (editor as Editor).getHTML().match(/<h1>(.*?)<\/h1>/)?.[1] || '');
+      if (firstParagraph) {
+        setTitle(removeTags(firstParagraph));
+      }
+
+      setContent(currentContent);
     }
-    setContent(currentContent);
   };
+
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -131,7 +155,7 @@ const Content = ({ post, postId }: Props) => {
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm xl:prose-2xl leading-8 focus:outline-none w-full max-w-full",
+          "prose prose-sm xl:prose-2xl leading-8 focus:outline-none w-full max-w-full dark:text-wh-100",
       },
     },
   });
@@ -207,7 +231,7 @@ const Content = ({ post, postId }: Props) => {
   return (
     <div className="prose w-full max-w-full mb-10">
       {/* BREADCRUMBS */}
-      <h5 className="text-wh-300">{`Home > ${post.category} > ${post.title}`}</h5>
+      <h5 className="text-wh-300 dark:text-wh-10">{`Home > ${post.category} > ${post.title}`}</h5>
 
       {/* CATEGORY AND EDIT */}
       <CategoryAndEdit
@@ -239,7 +263,7 @@ const Content = ({ post, postId }: Props) => {
             </div>
           )}
           <div className="flex gap-3 items-center flex-wrap">
-            <h5 className="font-semibold text-xs">By {post.author}</h5>
+            <h5 className="font-semibold text-xs dark:text-wh-10">By {post.author}</h5>
             <h6 className="text-wh-300 text-xs">{formattedDate}</h6>
             <div className="text-wh-300 flex items-center">
               <EyeIcon className="h-5 w-5 mx-1" />

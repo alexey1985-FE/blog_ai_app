@@ -17,6 +17,10 @@ body {
 	min-height: 100%;
 }
 
+html.dark body {
+	background-color: #181818;
+}
+
 @keyframes fade-in {
 	from {
 		opacity: 0;
@@ -45,4 +49,21 @@ article p:not(:first-child) {
 
 .user-logo img {
 	height: revert-layer;
+}
+
+input {
+	background-color: white !important;
+}
+
+html.dark div.tiptap h1,
+html.dark div.tiptap h2,
+html.dark div.tiptap h3 {
+	color: #da904c;
+}
+
+html.dark div.rounded-md div.tiptap h1,
+html.dark div.rounded-md div.tiptap h2,
+html.dark div.rounded-md div.tiptap h3,
+html.dark div.rounded-md div.tiptap p {
+	color: black;
 }
