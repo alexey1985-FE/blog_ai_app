@@ -6,7 +6,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/firebase-config';
 import { getUserNameAndLogo } from '@/utils/getUserNameAndLogoByUid';
 
-type ExtendedUserType = User & { uid?: string; userName: string; userLogo: string };
+type ExtendedUserType = User & { uid?: string; userName: string; userLogo: string; };
 
 export const authOptions: AuthOptions = {
 	// Configure one or more authentication providers
@@ -29,7 +29,7 @@ export const authOptions: AuthOptions = {
 							const user = userCredential.user;
 							const firebaseUser: any = {
 								id: user.uid,
-								email: user.email,
+								email: user.email
 							};
 
 							const { userName, userLogo } = await getUserNameAndLogo(user?.uid);
@@ -61,7 +61,6 @@ export const authOptions: AuthOptions = {
 				firebaseUser.userName = userName || '';
 				firebaseUser.userLogo = userLogo || '';
 			}
-
 			return session;
 		},
 	},

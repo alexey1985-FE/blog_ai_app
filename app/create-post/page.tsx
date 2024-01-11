@@ -154,8 +154,8 @@ const CreatePost = () => {
       setImage('');
       setImageInputValue('');
 
-      router.refresh();
       router.push("/");
+      router.refresh();
     } catch (error) {
       console.error('Error creating post:', error);
     }

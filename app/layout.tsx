@@ -18,34 +18,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={openSans.className} suppressHydrationWarning={true}>
-        <SessionProvider>
-          <Toaster position="bottom-right" toastOptions={{
-            duration: 4000,
-            success: {
-              style: {
-                background: '#7F7F7F',
-                color: '#fff',
-                padding: '1rem',
-                fontSize: '1rem',
-                lineHeight: '20px'
+        <Provider>
+          <SessionProvider>
+            <Toaster position="bottom-right" toastOptions={{
+              duration: 4000,
+              success: {
+                style: {
+                  background: '#7F7F7F',
+                  color: '#fff',
+                  padding: '1rem',
+                  fontSize: '1rem',
+                  lineHeight: '20px'
+                },
               },
-            },
-            error: {
-              style: {
-                background: '#e2dbdb',
-                color: '#fb2828',
-                padding: '1rem',
-                fontSize: '1rem',
-                lineHeight: '20px',
+              error: {
+                style: {
+                  background: '#e2dbdb',
+                  color: '#fb2828',
+                  padding: '1rem',
+                  fontSize: '1rem',
+                  lineHeight: '20px',
+                }
               }
-            }
-          }} />
-          <Provider>
+            }} />
             <Navbar />
             {children}
             <Footer />
-          </Provider>
-        </SessionProvider>
+          </SessionProvider>
+        </Provider>
       </body>
     </html>
   );

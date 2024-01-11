@@ -20,6 +20,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
   const [commentUserName, setCommentUserName] = useState<string | undefined>(undefined);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
+
   const inputRef = useRef<HTMLInputElement | null>(null);
   const trashIconRef = useRef<SVGSVGElement | null>(null);
   const { data } = useSession()
@@ -110,7 +111,12 @@ const Comments: React.FC<Comment> = ({ postId }) => {
     } else {
       setUserName(data?.user?.name)
     }
-    setUserLogo(data?.user?.image || '')
+
+    if (data?.user?.image) {
+      setUserLogo(data?.user?.image || '')
+    } else {
+      setUserLogo(data?.user?.userLogo || '')
+    }
 
     const fetchComments = async () => {
       const commentsData = await getComments(postId);
@@ -126,32 +132,35 @@ const Comments: React.FC<Comment> = ({ postId }) => {
         {(comments.length !== 0 && data) || (comments.length !== 0 && !data) ? <h2 className='dark:text-indigo-400'>Comments</h2> : null}
         <div>
           {comments.map((comment) => (
-            <div key={comment.commentId} className="flex items-center">
-              {comment.userLogo ?
-                <Image src={comment.userLogo} alt="user logo" width={40} height={40} className="m-0 mr-5 rounded-full translate-x-1" /> :
-                <UserCircleIcon className="w-14 h-14 mr-3 text-gray-300" />
+            <div className='flex items-center' key={comment.commentId}>
+              {
+                comment.userLogo ?
+                  <Image src={comment.userLogo} alt="user logo" width={40} height={40} className="m-0 mr-5 rounded-full translate-x-1 comments-logo" /> :
+                  <UserCircleIcon className="w-14 h-14 mr-3 text-gray-300" />
               }
-              <div className={`flex flex-col translate-y-3 edit-comment-container ${userName && comment.userName === userName ? 'hover:cursor-pointer' : ''}`}
-                onClick={() => {
-                  if (userName && comment.userName === userName) {
-                    handleEditComment(comment.commentId, comment.text);
-                  } else { setEditCommentId(null) }
-                  setCommentUserName(comment.userName);
-                }}>
-                {comment.createdAt ?
-                  <>
-                    <div className="flex">
-                      <h4 className="m-0 dark:text-wh-10">{comment.userName}</h4>
-                      <i className='m-0 ml-3 -translate-y-0.5 text-gray-500 dark:text-wh-100'>{comment.createdAt.toString()}</i>
-                    </div>
-                    <p className="m-0 mb-3 text-gray-500 dark:text-wh-100">{comment.text}</p>
-                  </>
-                  :
-                  <>
-                    <h4 className="m-0">{comment.userName}</h4>
-                    <p className="mb-4 text-gray-500">{comment.text}</p>
-                  </>
-                }
+              <div className="flex items-center" >
+                <div className={`flex flex-col translate-y-3 edit-comment-container w-64 xs:w-96 sm:w-[600px] lg:w-auto  ${userName && comment.userName === userName ? 'hover:cursor-pointer' : ''}`}
+                  onClick={() => {
+                    if (userName && comment.userName === userName) {
+                      handleEditComment(comment.commentId, comment.text);
+                    } else { setEditCommentId(null) }
+                    setCommentUserName(comment.userName);
+                  }}>
+                  {comment.createdAt ?
+                    <>
+                      <div className="flex">
+                        <h4 className="m-0 dark:text-wh-10">{comment.userName}</h4>
+                        <i className='m-0 ml-3 -translate-y-0.5 text-gray-500 dark:text-wh-100'>{comment.createdAt.toString()}</i>
+                      </div>
+                      <p className="m-0 mb-3 text-gray-500 dark:text-wh-100">{comment.text}</p>
+                    </>
+                    :
+                    <>
+                      <h4 className="m-0">{comment.userName}</h4>
+                      <p className="mb-4 text-gray-500">{comment.text}</p>
+                    </>
+                  }
+                </div>
               </div>
             </div>
           ))}
@@ -189,9 +198,17 @@ const Comments: React.FC<Comment> = ({ postId }) => {
               </div>
               {showDeleteConfirmation && (
                 <DeleteModal
+                  showDeleteConfirmation={showDeleteConfirmation}
+                  setShowDeleteConfirmation={setShowDeleteConfirmation}
                   handleDelete={() => handleDeleteComment(editCommentId)}
                   deleteMessage={'Are you sure you want to delete this comment?'}
-                  setShowDeleteConfirmation={setShowDeleteConfirmation}
+                  deleteUser={async () => {}}
+                  confirmDeleteUser={false}
+                  setConfirmDeleteUser={() => void {}}
+                  setVerificationPassword={() => void {}}
+                  setError={() => void {}}
+                  error={""}
+                  googleUser={false}
                 />
               )}
             </>

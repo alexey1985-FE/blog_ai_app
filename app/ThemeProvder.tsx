@@ -7,7 +7,6 @@ type Props = {
 }
 
 const Provider = ({ children }: Props) => {
-
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -15,8 +14,9 @@ const Provider = ({ children }: Props) => {
   }, [])
 
   if (!mounted) {
-    return <>{children}</>
+    return null
   }
+
   return (
     <ThemeProvider attribute='class'>
       {children}

@@ -49,6 +49,15 @@ article p:not(:first-child) {
 
 .user-logo img {
 	height: revert-layer;
+  object-fit: cover;
+}
+
+.comments-logo {
+	align-self: flex-start;
+	width: 40px;
+	height: 40px;
+	transform: translateY(0.7rem);
+  object-fit: cover;
 }
 
 input {

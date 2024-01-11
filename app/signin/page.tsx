@@ -4,8 +4,9 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { checkIfFieldExists } from '@/utils/checkIfFieldExists'
-import Link from 'next/link'
 import { motion } from "framer-motion";
+import { handleGoogleSignIn } from "@/utils/googleAuth";
+import Link from 'next/link'
 
 export default function Signin() {
   const [email, setEmail] = useState("");
@@ -64,13 +65,6 @@ export default function Signin() {
     return () => unsubscribe();
   }, []);
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await signIn("google", { callbackUrl: "/" });
-    } catch (error) {
-      console.log('Google sign-in failed. Please try again.');
-    }
-  };
 
   return (
     <form

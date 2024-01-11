@@ -6,7 +6,6 @@ import { deleteCommentsForPost } from "@/utils/fetchComments";
 import { deletePost } from "@/utils/fetchPosts";
 import { useRouter } from "next/navigation";
 import DeleteModal from "@/(shared)/DeleteModal";
-import { revalidatePath } from "next/cache";
 
 const CategoryAndEdit = ({
   isEditable,
@@ -44,9 +43,8 @@ const CategoryAndEdit = ({
       await deleteCommentsForPost(postId);
       await deletePost(postId);
 
-      router.refresh();
-      revalidatePath('/')
       router.push("/");
+      router.refresh();
     } catch (error) {
       console.error("Error deleting post:", error);
     }
@@ -83,12 +81,19 @@ const CategoryAndEdit = ({
           )}
         </div>
       )}
-
       {showDeleteConfirmation && (
         <DeleteModal
           handleDelete={handleDeletePost}
           deleteMessage={'Are you sure you want to delete this post?'}
+          showDeleteConfirmation={showDeleteConfirmation}
           setShowDeleteConfirmation={setShowDeleteConfirmation}
+          deleteUser={async () => {}}
+          confirmDeleteUser={false}
+          setConfirmDeleteUser={() => void {}}
+          setVerificationPassword={() => void {}}
+          setError={() => void {}}
+          error={""}
+          googleUser={false}
         />
       )}
     </div>

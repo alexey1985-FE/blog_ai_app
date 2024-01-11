@@ -48,7 +48,7 @@ const Card = ({
             (max-width: 1060px) 50vw,
             33vw"
                 style={{ objectFit: "cover" }}
-                priority
+                priority={true}
               />
             )}
           </div>
@@ -72,13 +72,12 @@ const Card = ({
                   fill
                   alt="tech"
                   src={image}
-
                   sizes="(max-width: 480px) 100vw,
                     (max-width: 768px) 75vw,
                     (max-width: 1060px) 50vw,
                     33vw"
                   style={{ objectFit: "cover" }}
-                  priority
+                  priority={true}
                 />
               )}
             </div>

@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "./Card";
 import { Post } from "@/types";
 import { useGroupedPosts } from "@/utils/groupPosts";
@@ -12,15 +12,50 @@ type Props = {
 };
 
 const Other = ({ otherPosts }: Props) => {
+  const isPhone = useMedia('(max-width: 450px)');
   const isMobile = useMedia('(max-width: 767px)');
   const groupSize = isMobile ? 2 : 4;
-  const groupedHotPosts = useGroupedPosts(otherPosts, groupSize);
+
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedCategory(selectedValue);
+  };
+
+  const uniqueCategories = Array.from(new Set(otherPosts.map(post => post.category)));
+
+  const filteredPosts = selectedCategory
+    ? otherPosts.filter(post => post.category === selectedCategory)
+    : otherPosts;
+
+  useEffect(() => {
+    if (selectedCategory && !uniqueCategories.includes(selectedCategory)) {
+      setSelectedCategory(null);
+    }
+  }, [selectedCategory, uniqueCategories]);
+
+  const groupedFilteredPosts = useGroupedPosts(filteredPosts, groupSize);
 
   return (
     <section className="pt-4 mb-16">
       <hr className="border-1" />
       {/* HEADER */}
-      <p className="font-bold text-2xl my-8">Other Trending Posts</p>
+      <div className={`my-8 ${isPhone ? 'block' : 'flex justify-between'}`}>
+        <p className={`font-bold text-2xl ${isPhone ? 'block mb-6' : 'flex justify-between'}`}>Other Trending Posts</p>
+        <select
+          value={selectedCategory || ""}
+          onChange={handleCategoryChange}
+          className={`border-4 border-accent-orange rounded-[3.25rem] p-2 focus:outline-none ${isPhone && 'w-full'}`}
+        >
+          <option value="">Default posts</option>
+          {uniqueCategories.map(category => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </div>
       <Swiper
         grabCursor
         modules={[Navigation]}
@@ -29,7 +64,7 @@ const Other = ({ otherPosts }: Props) => {
         className="max-w-[100vw] md:max-w-[75vw]"
         speed={800}
       >
-        {groupedHotPosts.map((group, groupIndex) => (
+        {groupedFilteredPosts.map((group, groupIndex) => (
           <SwiperSlide key={groupIndex}>
             <div className="sm:grid grid-cols-2 gap-16">
               {group.map((post, index) => (

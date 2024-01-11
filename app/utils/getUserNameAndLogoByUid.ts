@@ -8,13 +8,12 @@ export async function getUserNameAndLogo(uid: string) {
 
 		if (userDoc.exists()) {
 			const userData = userDoc.data();
-			const userName = userData?.userName || '';
-			const userLogo = userData?.userLogo || ''; 
+			const { userName = '', userLogo = '' } = userData || {};
 			return { userName, userLogo };
 		}
-		return { userName: '', userLogo: '' };
+		return { error: 'User document does not exist' };
 	} catch (error) {
 		console.error('Error fetching user data:', error);
-		return { userName: '', userLogo: '' };
+		return { error: 'Failed to fetch user data' };
 	}
 }

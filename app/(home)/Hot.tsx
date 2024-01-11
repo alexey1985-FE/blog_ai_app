@@ -4,7 +4,6 @@ import { Post } from "@/types";
 import Card from "@/(shared)/Card";
 import useMedia from "use-media";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from 'swiper/modules';
 import { useGroupedPosts } from "@/utils/groupPosts";
 import 'swiper/css/bundle';
 import 'swiper/css/autoplay'
@@ -29,14 +28,9 @@ const Hot = ({ hotPosts }: Props) => {
 
       <Swiper
         grabCursor
-        modules={[Autoplay]}
         spaceBetween={30}
         slidesPerView={1}
         className="max-w-[100vw]"
-        autoplay={{
-          delay: 5000,
-          pauseOnMouseEnter: true,
-        }}
         speed={1500}
       >
         {groupedHotPosts.map((group, groupIndex) => (

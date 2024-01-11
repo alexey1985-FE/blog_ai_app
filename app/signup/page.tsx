@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { motion } from 'framer-motion';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { UserDoc } from 'next-auth';
+import { handleGoogleSignIn } from '@/utils/googleAuth';
 
 export default function Signup() {
   const [userName, setUsername] = useState('');
@@ -16,7 +17,8 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [userLogo, setUserLogo] = useState<File | null>(null);
   const [passwordAgain, setPasswordAgain] = useState('');
-  const [error, setError] = useState('');
+  const [mailError, setMailError] = useState('');
+  const [userNameError, setUserNameError] = useState('');
 
   const router = useRouter();
 
@@ -36,12 +38,16 @@ export default function Signup() {
 
     if (emailExists || usernameExists) {
       if (emailExists) {
-        setError(`User with email "${email}" already exists`);
+        setMailError(`User with email "${email}" already exists`);
+      } else {
+        setMailError('');
       }
       if (usernameExists) {
-        setError(`User with username "${userName}" already exists`);
+        setUserNameError(`User with username "${userName}" already exists`);
+      } else {
+        setUserNameError('');
       }
-      return;
+      return
     }
 
     createUserWithEmailAndPassword(auth, email, password)
@@ -52,7 +58,7 @@ export default function Signup() {
         const userDoc: UserDoc = {
           userName,
           email: user.email,
-          uid,
+          uid
         };
 
         if (userLogo) {
@@ -97,6 +103,9 @@ export default function Signup() {
               />
             </div>
           </div>
+          {userNameError && (
+            <p className="text-red-500 text-sm -translate-y-4">{userNameError}</p>
+          )}
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900 dark:text-wh-50">
@@ -114,6 +123,9 @@ export default function Signup() {
               />
             </div>
           </div>
+          {mailError && (
+            <p className="text-red-500 text-sm -translate-y-4">{mailError}</p>
+          )}
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900 dark:text-wh-50">
@@ -134,7 +146,7 @@ export default function Signup() {
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900 dark:text-wh-50">
-                Confirm Password
+                Confirm Password<span aria-hidden="true" className='text-rose-600'>*</span>
               </label>
             </div>
             <div className="mt-2">
@@ -168,14 +180,19 @@ export default function Signup() {
               whileTap={{ scale: 0.97 }}
               disabled={(!email || !password || !passwordAgain) || (password !== passwordAgain)}
               type="submit"
-              className="disabled:opacity-40 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-gray-900 shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:text-white"
+              className="disabled:opacity-40 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:text-white"
             >
               Sign Up
             </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="mt-3 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+            >
+              Sign up with Google
+            </motion.button>
           </div>
-          {error && (
-            <p className="text-red-500 text-sm -translate-y-3">{error}</p>
-          )}
         </div>
       </div>
     </form>

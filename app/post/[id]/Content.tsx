@@ -146,7 +146,6 @@ const Content = ({ post, postId }: Props) => {
     }
   };
 
-
   const editor = useEditor({
     extensions: [StarterKit],
     onUpdate: handleOnChangeContent,

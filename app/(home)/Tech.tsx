@@ -1,7 +1,7 @@
 'use client'
 import { Post } from "@/types";
 import Card from "app/(shared)/Card";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import useMedia from 'use-media'
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from 'swiper/modules';
