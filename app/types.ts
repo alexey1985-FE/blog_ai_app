@@ -44,4 +44,5 @@ export type Comment = {
 	userName?: string;
 	userLogo?: string;
 	createdAt: string;
+	editedAt: string;
 };

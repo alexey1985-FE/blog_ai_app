@@ -1,6 +1,6 @@
 "use client"
 
-import { addComment, getComments, deleteComment, editComment } from '@/utils/fetchComments';
+import { addComment, getComments, deleteComment, editComment, formatDate } from '@/utils/fetchComments';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Comment } from '@/types';
 import { useSession } from 'next-auth/react';
@@ -20,6 +20,9 @@ const Comments: React.FC<Comment> = ({ postId }) => {
   const [commentUserName, setCommentUserName] = useState<string | undefined>(undefined);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
+  const editedCommentsJson = sessionStorage.getItem('editedComments');
+  const initialEditedComments = editedCommentsJson ? JSON.parse(editedCommentsJson) : {};
+  const [editedComments, setEditedComments] = useState<Record<string, boolean>>(initialEditedComments);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const trashIconRef = useRef<SVGSVGElement | null>(null);
@@ -27,16 +30,6 @@ const Comments: React.FC<Comment> = ({ postId }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const formatDate = (date: Date): string => {
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-
-      return `${day}.${month}.${year} ${hours}:${minutes}`;
-    };
 
     const now = new Date();
     const createdAt = formatDate(now);
@@ -81,6 +74,8 @@ const Comments: React.FC<Comment> = ({ postId }) => {
       const updatedComments = await getComments(postId);
       setComments(updatedComments);
 
+      setEditedComments((prev) => ({ ...prev, [commentId]: true }));
+
       setEditedComment('');
       setEditCommentId(null);
 
@@ -106,6 +101,10 @@ const Comments: React.FC<Comment> = ({ postId }) => {
   );
 
   useEffect(() => {
+    sessionStorage.setItem('editedComments', JSON.stringify(editedComments));
+  }, [editedComments]);
+
+  useEffect(() => {
     if (data?.user?.userName) {
       setUserName(data?.user?.userName)
     } else {
@@ -125,6 +124,14 @@ const Comments: React.FC<Comment> = ({ postId }) => {
 
     fetchComments();
   }, [postId, data]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setEditedComments({});
+    }, 60000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
@@ -146,18 +153,23 @@ const Comments: React.FC<Comment> = ({ postId }) => {
                     } else { setEditCommentId(null) }
                     setCommentUserName(comment.userName);
                   }}>
-                  {comment.createdAt ?
+                  {comment.createdAt && !comment.editedAt ?
                     <>
-                      <div className="flex">
-                        <h4 className="m-0 dark:text-wh-10">{comment.userName}</h4>
-                        <i className='m-0 ml-3 -translate-y-0.5 text-gray-500 dark:text-wh-100'>{comment.createdAt.toString()}</i>
+                      <div className="flex items-center">
+                        <h4 className="leading-7 xs:leading-8 m-0 dark:text-wh-10 text-sm xs:text-base">{comment.userName}</h4>
+                        <i className='m-0 ml-3 text-gray-500 dark:text-wh-100 text-xs xs:text-base'>{comment.createdAt.toString()}</i>
                       </div>
-                      <p className="m-0 mb-3 text-gray-500 dark:text-wh-100">{comment.text}</p>
+                      <p className="m-0 mb-3 text-gray-500 dark:text-wh-100 text-sm xs:text-base">{comment.text}</p>
                     </>
                     :
                     <>
-                      <h4 className="m-0">{comment.userName}</h4>
-                      <p className="mb-4 text-gray-500">{comment.text}</p>
+                      <div className="flex items-center">
+                        <h4 className="m-0 leading-7 xs:leading-8 dark:text-wh-10 text-sm xs:text-base">{comment.userName}</h4>
+                        <i className='m-0 ml-3 text-gray-500 dark:text-wh-100 text-xs xs:text-base'>
+                          {formatDate(comment.editedAt) + (editedComments[comment.commentId] ? ' (edited)' : '')}
+                        </i>
+                      </div>
+                      <p className="m-0 mb-3 text-gray-500 dark:text-wh-100 text-sm xs:text-base">{comment.text}</p>
                     </>
                   }
                 </div>
@@ -202,7 +214,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
                   setShowDeleteConfirmation={setShowDeleteConfirmation}
                   handleDelete={() => handleDeleteComment(editCommentId)}
                   deleteMessage={'Are you sure you want to delete this comment?'}
-                  deleteUser={async () => {}}
+                  deleteUser={async () => { }}
                   confirmDeleteUser={false}
                   setConfirmDeleteUser={() => void {}}
                   setVerificationPassword={() => void {}}
