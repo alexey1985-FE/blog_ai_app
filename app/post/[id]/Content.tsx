@@ -328,7 +328,7 @@ const Content = ({ post, postId }: Props) => {
       </div>
 
       {/* COMMENTS */}
-      <Comments postId={postId} commentId={""} text={""} createdAt={''} />
+      <Comments postId={postId} commentId={""} text={""} createdAt={''} editedAt={""} />
     </div>
   );
 };

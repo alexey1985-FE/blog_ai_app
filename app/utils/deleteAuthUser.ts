@@ -14,7 +14,7 @@ export const deleteAccount = async (
 	password: string,
 	setError: Dispatch<SetStateAction<string>>,
 ): Promise<void> => {
-	try {
+  try {
 		const auth = getAuth();
 		const userRef = doc(collection(db, 'users'), uid);
 

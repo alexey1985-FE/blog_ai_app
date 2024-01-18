@@ -8,6 +8,7 @@ import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image';
 import DeleteModal from './DeleteModal';
+import { usePathname } from 'next/navigation';
 
 const Comments: React.FC<Comment> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
@@ -19,6 +20,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
   const [editedComment, setEditedComment] = useState('');
   const [commentUserName, setCommentUserName] = useState<string | undefined>(undefined);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [commentError, setCommentError] = useState('');
 
   const editedCommentsJson = sessionStorage.getItem('editedComments');
   const initialEditedComments = editedCommentsJson ? JSON.parse(editedCommentsJson) : {};
@@ -27,6 +29,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const trashIconRef = useRef<SVGSVGElement | null>(null);
   const { data } = useSession()
+  const pathName = usePathname();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,9 +50,12 @@ const Comments: React.FC<Comment> = ({ postId }) => {
   };
 
   const handleDeleteComment = async (commentId: string) => {
+    setCommentError('')
     await deleteComment(commentId);
+
     const updatedComments = await getComments(postId);
     setComments(updatedComments);
+
     setEditCommentId(null);
     setShowDeleteConfirmation(false)
   };
@@ -69,16 +75,20 @@ const Comments: React.FC<Comment> = ({ postId }) => {
 
   const handleUpdateComment = async (commentId: string) => {
     try {
-      await editComment(commentId, editedComment);
+      if (!editedComment.trim()) {
+        setCommentError('Please write a comment');
+      } else {
+        await editComment(commentId, editedComment);
 
-      const updatedComments = await getComments(postId);
-      setComments(updatedComments);
+        const updatedComments = await getComments(postId);
+        setComments(updatedComments);
 
-      setEditedComments((prev) => ({ ...prev, [commentId]: true }));
+        setEditedComments((prev) => ({ ...prev, [commentId]: true }));
 
-      setEditedComment('');
-      setEditCommentId(null);
-
+        setEditedComment('');
+        setCommentError('');
+        setEditCommentId(null);
+      }
     } catch (error) {
       console.error("Error updating comment:", error);
     }
@@ -128,10 +138,17 @@ const Comments: React.FC<Comment> = ({ postId }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setEditedComments({});
-    }, 60000);
+    }, 10000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [editedComments]);
+
+
+  useEffect(() => {
+    if (pathName === pathName) {
+      setEditedComments({})
+    }
+  }, [pathName])
 
   return (
     <>
@@ -179,7 +196,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
         </div>
 
         {data && <form onSubmit={handleSubmit} className="mt-6">
-          {editCommentId === null ? (
+          {editCommentId === null && !commentError ? (
             <>
               <input
                 value={newComment}
@@ -201,8 +218,9 @@ const Comments: React.FC<Comment> = ({ postId }) => {
                 ref={inputRef}
                 className="w-full p-3 rounded-md border-2 border-grey-200 flex items-center focus:outline-none"
               />
-              <div className="space-x-2 flex min-w-[5rem] items-center">
-                <button onClick={() => handleUpdateComment(editCommentId)} type="button" className='mt-3 mr-3 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none'>Edit</button>
+              {commentError && <i className="text-red-500 m-0">{commentError}</i>}
+              <div className="edit-comment-container space-x-2 flex min-w-[5rem] items-center">
+                <button onClick={() => handleUpdateComment(editCommentId as string)} type="button" className='mt-3 mr-3 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none'>Edit</button>
                 <TrashIcon onClick={() => setShowDeleteConfirmation(true)}
                   className="text-red-600 hover:cursor-pointer w-6 h-6 translate-y-1.5"
                   ref={trashIconRef}
@@ -212,7 +230,7 @@ const Comments: React.FC<Comment> = ({ postId }) => {
                 <DeleteModal
                   showDeleteConfirmation={showDeleteConfirmation}
                   setShowDeleteConfirmation={setShowDeleteConfirmation}
-                  handleDelete={() => handleDeleteComment(editCommentId)}
+                  handleDelete={() => handleDeleteComment(editCommentId as string)}
                   deleteMessage={'Are you sure you want to delete this comment?'}
                   deleteUser={async () => { }}
                   confirmDeleteUser={false}

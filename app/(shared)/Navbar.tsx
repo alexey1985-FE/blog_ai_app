@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, CSSProperties } from "react";
 import Image from "next/image";
 import SocialLinks from "./SocialLinks";
 import Ad1 from "/public/assets/ad-1.jpg";
-import { useSession, signOut, getProviders, ClientSafeProvider } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { MenuBtn } from "./MenuBtn";
@@ -71,10 +71,12 @@ const Navbar = () => {
 
   const deleteUser = async () => {
     try {
+      setError('')
       await deleteAccount(userUid as string, verificationPassword as string, setError);
+      await signOut({ callbackUrl: '/signup' });
 
       if (googleUser || !error) {
-        signOut({ callbackUrl: '/signup' });
+        await signOut({ callbackUrl: '/signup' });
       }
       if (error) {
         setShowDeleteConfirmation(true)

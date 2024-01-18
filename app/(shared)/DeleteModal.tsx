@@ -61,6 +61,7 @@ const DeleteModal = ({
                   signOut({ callbackUrl: '/signup' });
                 } else {
                   setConfirmDeleteUser(true);
+                  setError('')
                 }
               }}
             >
