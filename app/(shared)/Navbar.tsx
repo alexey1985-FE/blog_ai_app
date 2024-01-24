@@ -92,7 +92,6 @@ const Navbar = () => {
     setActiveLink(link)
   };
 
-
   const headerStyle: CSSProperties = {
     top: scrollingDown ? `-${headerRef?.current?.clientHeight || 0}px` : "0",
     position: "fixed",
@@ -172,7 +171,6 @@ const Navbar = () => {
     </motion.div>
   );
 
-
   return (
     <header className="mb-5 mt-20">
       <nav className="bg-gray-900" style={headerStyle} ref={headerRef}>
@@ -242,7 +240,7 @@ const Navbar = () => {
                       src={userLogo}
                       width={40}
                       height={40}
-                      priority
+                      priority={true}
                       className="rounded-full hover:cursor-pointer"
                       onClick={handleLogOut}
                       tabIndex={0}
@@ -252,9 +250,10 @@ const Navbar = () => {
                           handleLogOut();
                         }
                       }}
+                      placeholder="blur"
+                      blurDataURL="/assets/blurred_loading.jpg"
                     />
                   ) : !userLogo && userName ? <UserCircleIcon className="w-10 h-10 text-gray-300 hover:cursor-pointer" onClick={handleLogOut} /> : null}
-
                   {userName ? (
                     <div className="relative">
                       <AnimatePresence>
@@ -348,7 +347,7 @@ const Navbar = () => {
         </div>
       </div>
       <hr className="border-1 mx-10" />
-    </header>
+    </header >
   );
 };
 

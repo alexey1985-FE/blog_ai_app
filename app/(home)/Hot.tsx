@@ -6,7 +6,6 @@ import useMedia from "use-media";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useGroupedPosts } from "@/utils/groupPosts";
 import 'swiper/css/bundle';
-import 'swiper/css/autoplay'
 
 type Props = {
   hotPosts: Post[];
@@ -31,7 +30,7 @@ const Hot = ({ hotPosts }: Props) => {
         spaceBetween={30}
         slidesPerView={1}
         className="max-w-[100vw]"
-        speed={1500}
+        speed={800}
       >
         {groupedHotPosts.map((group, groupIndex) => (
           <SwiperSlide key={groupIndex}>

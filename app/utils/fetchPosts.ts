@@ -1,19 +1,45 @@
-import { collection, getDocs, query, orderBy, doc, getDoc, deleteDoc } from "firebase/firestore";
-import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
-import { db } from "@/firebase-config";
-import { Post } from "@/types";
+import {
+	collection,
+	getDocs,
+	query,
+	orderBy,
+	doc,
+	getDoc,
+	deleteDoc,
+} from 'firebase/firestore';
+import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
+import { db } from '@/firebase-config';
+import { Post } from '@/types';
 
 export const getPosts = async () => {
-  const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
-  const postsArr: Post[] = [];
+	const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+	const querySnapshot = await getDocs(q);
+	const postsArr: Post[] = [];
 
-  querySnapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
-    const data = doc.data();
-    postsArr.push({ ...data, id: doc.id } as Post);
-  });
+	querySnapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
+		const data = doc.data();
+		postsArr.push({ ...data, id: doc.id } as Post);
+	});
 
-  return postsArr;
+	return postsArr;
+};
+
+export const getPopularSortedPosts = async (): Promise<Post[]> => {
+	try {
+		const allPosts = await getPosts();
+
+		const filteredPosts = allPosts.filter((post) => post.views && post.views > 5);
+
+		const sortedPosts = filteredPosts.sort((a, b) => {
+			const dateA = new Date(a.createdAt).getTime();
+			const dateB = new Date(b.createdAt).getTime();
+			return dateB - dateA;
+		});
+		return sortedPosts;
+	} catch (error) {
+		console.error('Error fetching and processing posts:', error);
+		return [];
+	}
 };
 
 export const getPostById = async (postId: string) => {

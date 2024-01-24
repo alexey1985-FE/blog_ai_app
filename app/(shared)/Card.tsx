@@ -48,7 +48,8 @@ const Card = ({
             (max-width: 1060px) 50vw,
             33vw"
                 style={{ objectFit: "cover" }}
-                priority={true}
+                placeholder="blur"
+                blurDataURL="/assets/blurred_loading.jpg"
               />
             )}
           </div>
@@ -56,7 +57,7 @@ const Card = ({
             <h4 className="inline-block px-5 py-1 font-semibold bg-accent-orange text-wh-900">
               {post?.category}
             </h4>
-            <div className="text-white mt-2 text-lg">
+            <div className="text-slate-200 mt-2 text-lg">
               {post?.title}
             </div>
           </div>
@@ -77,20 +78,21 @@ const Card = ({
                     (max-width: 1060px) 50vw,
                     33vw"
                   style={{ objectFit: "cover" }}
-                  priority={true}
+                  placeholder="blur"
+                  blurDataURL="/assets/blurred_loading.jpg"
                 />
               )}
+              {postsName === 'Other' && (
+                <div className="absolute z-2 bottom-0 left-0 p-3">
+                  <h4 className="inline-block px-5 py-1 font-semibold bg-accent-orange text-wh-900">
+                    {post?.category}
+                  </h4>
+                  <p className="text-white mt-2 text-lg">
+                    {post?.title}
+                  </p>
+                </div>
+              )}
             </div>
-            {postsName === 'Other' && (
-              <div className="absolute z-2 bottom-0 left-0 p-3">
-                <h4 className="inline-block px-5 py-1 font-semibold bg-accent-orange text-wh-900">
-                  {post?.category}
-                </h4>
-                <p className="text-white mt-2 text-lg">
-                  {post?.title}
-                </p>
-              </div>
-            )}
           </Link>
           <div className="basis-full">
             {pageName === 'popular' && <Link href={`${process.env.NEXT_PUBLIC_URL}/post/${post?.id}`}>

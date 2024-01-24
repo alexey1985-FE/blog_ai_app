@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import EditorMenuBar from '@/post/[id]/EditorMenuBar';
-import { snippetGenerate } from '@/utils/snippetGenerate';
+import { capitalizeFirstLetter, snippetGenerate } from '@/utils/snippetGenerate';
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -44,14 +44,16 @@ const CreatePost = () => {
 
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (form.title !== e.target.value) {
-      setForm({ ...form, title: e.target.value });
+    const updatedTitle = capitalizeFirstLetter(e.target.value);
+    if (form.title !== updatedTitle) {
+      setForm({ ...form, title: updatedTitle });
     }
   };
 
   const onCategoryChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, category: e.target.value });
-  }
+    const updatedCategory = capitalizeFirstLetter(e.target.value);
+    setForm({ ...form, category: updatedCategory });
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;

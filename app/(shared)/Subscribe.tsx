@@ -40,7 +40,8 @@ const Subscribe = () => {
             <motion.button whileTap={{ scale: 0.97 }} type="submit" className="bg-accent-red text-wh-10 font-semibold w-5/6 min-w-[100px] py-2 px-5 mt-3">
               SUBSCRIBE
             </motion.button>
-          </form></>
+          </form>
+        </>
         : <p className="mt-3 text-base dark:text-wh-900">
           Need to log in to make a subscription
         </p>}

@@ -25,7 +25,7 @@ export default async function Home() {
     const timeDifference = currentDate.getTime() - postDate.getTime();
     const daysDifference = timeDifference / (1000 * 3600 * 24);
 
-    return daysDifference <= 80;
+    return daysDifference <= 100;
   });
 
   const techPosts: Post[] = [];

@@ -1,15 +1,9 @@
 import React from "react";
-import { getPosts } from "@/utils/fetchPosts";
+import { getPopularSortedPosts } from "@/utils/fetchPosts";
 import Card from "@/(shared)/Card";
 
 const PopularPosts = async () => {
-  const allPosts = await getPosts();
-  const popularPosts = allPosts.filter(post => {
-    if (post.views) {
-      return post.views > 5
-    }
-    return
-  });
+  const popularSortedPosts = await getPopularSortedPosts();
 
   return (
     <section className="p-6 pb-10 grow">
@@ -22,7 +16,7 @@ const PopularPosts = async () => {
       </div>
 
       <div className="md:grid gap-10 grid-cols-3 grid-rows-2 my-3">
-        {popularPosts.map(post => (
+        {popularSortedPosts.map(post => (
           <Card
             className="col-span-1 row-span-1 mb-10 md:mb-0"
             post={post}

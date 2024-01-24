@@ -48,7 +48,7 @@ const Other = ({ otherPosts }: Props) => {
           onChange={handleCategoryChange}
           className={`border-4 border-accent-orange rounded-[3.25rem] p-2 focus:outline-none ${isPhone && 'w-full'}`}
         >
-          <option value="">Default posts</option>
+          <option value="">All posts</option>
           {uniqueCategories.map(category => (
             <option key={category} value={category}>
               {category}

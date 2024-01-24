@@ -1,5 +1,4 @@
 import { signOut } from "next-auth/react"
-import { revalidatePath } from "next/cache";
 import { usePathname, useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react"
 

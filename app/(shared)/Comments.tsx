@@ -1,5 +1,4 @@
 "use client"
-
 import { addComment, getComments, deleteComment, editComment, formatDate } from '@/utils/fetchComments';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Comment } from '@/types';

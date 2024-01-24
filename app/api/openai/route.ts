@@ -13,8 +13,8 @@ export async function POST(request: Request) {
 			messages: [
 				{
 					role: 'user',
-					content: `Create blog post using html tags (for heading and paragraph only) for formatting text based on this title: ${title} and contains only 3 lines of text.
-          Never use both ${title} and ${role} together in a title of the post!
+					content: `Create a 3 paragraphs of text blog post using html tags (for heading and paragraph only) for formatting text based on ${title} only.
+          Never write ${title} and ${role} together in a title of the post!
           Always ignore ${role} only in the name of title of the post!
           It is not necessary to write each sentence with a new heading and start on a new line.
           Write text with one heading and continue as regular text.
@@ -22,12 +22,6 @@ export async function POST(request: Request) {
           Write the post as experienced writer using ${role} style of writing posts.
           Always write post content according to the meaning of ${title} and ${role} and including them in the text.
           `,
-				},
-				{
-					role: 'system',
-					content: `${
-						role || 'Style of the post'
-					}. Write using html tags for text formatting.`,
 				},
 			],
 			model: 'gpt-3.5-turbo',

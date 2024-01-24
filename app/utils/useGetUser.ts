@@ -3,38 +3,41 @@ import { useSession } from 'next-auth/react';
 import { getUserNameAndLogo } from './getUserNameAndLogoByUid';
 
 const useGetUser = () => {
-  const { data } = useSession();
-  const uid = data?.user?.uid;
+	const { data } = useSession();
+	const uid = data?.user?.uid;
 
-  const [userName, setUserName] = useState('');
-  const [userLogo, setUserLogo] = useState('');
+	const [userName, setUserName] = useState('');
+	const [userLogo, setUserLogo] = useState('');
 
-  const getUser = async () => {
-    if (uid) {
-      const { userName, userLogo } = await getUserNameAndLogo(uid);
-      setUserName(userName);
-      setUserLogo(userLogo);
-    }
-    if (data?.user?.name) {
-      setUserName(data?.user?.name);
-    }
-    if (data?.user?.image) {
-      setUserLogo(data?.user?.image);
-    }
-  };
+	const getUser = async () => {
+		if (uid) {
+			const { userName, userLogo } = await getUserNameAndLogo(uid);
+			setUserName(userName);
+			setUserLogo(userLogo);
+		}
+		if (data?.user?.name) {
+			setUserName(data?.user?.name);
+		}
+		if (data?.user?.image) {
+			setUserLogo(data?.user?.image);
+		}
+	};
 
-  useEffect(() => {
-    getUser();
-  }, [uid]);
+	useEffect(() => {
+		getUser();
+	}, [uid]);
 
-  const memoizedValues = useMemo(() => ({ userName, userLogo, setUserName, setUserLogo }), [
-    userName,
-    userLogo,
-  ]);
+	const memoizedValues = useMemo(
+		() => ({
+			userName,
+			userLogo,
+			setUserName,
+			setUserLogo,
+		}),
+		[userName, userLogo],
+	);
 
-  return memoizedValues;
+	return memoizedValues;
 };
 
 export default useGetUser;
-
-

@@ -1,5 +1,4 @@
 "use client"
-
 import { Post } from "@/types";
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 import Image from "next/image";
@@ -17,7 +16,6 @@ import { snippetGenerate } from "@/utils/snippetGenerate";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useRouter } from "next/navigation";
-
 
 type Props = {
   post: Post;
@@ -279,7 +277,8 @@ const Content = ({ post, postId }: Props) => {
             src={newImage || post.image}
             sizes="(max-width: 480px) 100vw, (max-width: 768px) 85vw, (max-width: 1060px) 75vw, 60vw"
             style={{ objectFit: 'cover' }}
-            priority={true}
+            placeholder="blur"
+            blurDataURL="/assets/blurred_loading.jpg"
           />
           {isEditable && (
             <>

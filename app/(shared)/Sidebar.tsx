@@ -7,7 +7,6 @@ import Ad2 from "/public/assets/ad-2.png";
 import AboutProfile from "/public/assets/about-profile.jpg";
 import { AnimatePresence, motion } from "framer-motion";
 
-type Props = {};
 
 const Sidebar = () => {
   return (
@@ -32,7 +31,8 @@ const Sidebar = () => {
           <Image
             className="hidden md:block my-8 w-full"
             alt="advert-2"
-            // placeholder="blur"
+            placeholder="blur"
+            blurDataURL="/assets/blurred_loading.jpg"
             src={Ad2}
             width={500}
             height={1000}
@@ -43,7 +43,8 @@ const Sidebar = () => {
           <div className="flex justify-center my-3">
             <Image
               alt="about-profile"
-              // placeholder="blur"
+              placeholder="blur"
+              blurDataURL="/assets/blurred_loading.jpg"
               src={AboutProfile}
               style={{ width: "500px", height: "250px", objectFit: "cover" }}
             />

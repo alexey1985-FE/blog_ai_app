@@ -5,9 +5,9 @@ import React from "react";
 import useMedia from 'use-media'
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from 'swiper/modules';
+import { useGroupedPosts } from "@/utils/groupPosts";
 import 'swiper/css/bundle';
 import 'swiper/css/navigation';
-import { useGroupedPosts } from "@/utils/groupPosts";
 
 type Props = {
   techPosts: Post[];
@@ -17,6 +17,9 @@ const Tech = ({ techPosts }: Props) => {
   const isMobile = useMedia('(max-width: 767px)');
   const groupSize = isMobile ? 1 : 4;
   const groupedHotPosts = useGroupedPosts(techPosts, groupSize);
+
+
+  console.log('Tech.tsx groupedHotPosts', groupedHotPosts);
 
   return (
     <section>
@@ -37,7 +40,7 @@ const Tech = ({ techPosts }: Props) => {
       >
         {groupedHotPosts.map((group, groupIndex) => (
           <SwiperSlide key={groupIndex}>
-            <div className="sm:grid grid-cols-2 grid-rows-2 gap-x-8 gap-y-8 mt-5 mb-0 md:pb-3">
+            <div className="sm:grid grid-cols-2 grid-rows-2 gap-x-8 gap-y-8 mt-5 mb-0 md:pb-3 h-[370px]">
               {group.map((post, index) => (
                 <React.Fragment key={post.id}>
                   {isMobile ?
