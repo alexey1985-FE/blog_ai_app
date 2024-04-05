@@ -20,10 +20,11 @@ const CategoryAndEdit = ({
   post,
   postId
 }: EditorProps) => {
-  const [userUid, setUserUid] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const { data } = useSession();
   const router = useRouter();
+
 
   const handleEnableEdit = () => {
     editor?.commands.focus('start')
@@ -54,7 +55,8 @@ const CategoryAndEdit = ({
   }
 
   useEffect(() => {
-    setUserUid(data?.user?.uid as string);
+    setUserEmail(data?.user.email as string);
+    router.refresh()
   }, [data]);
 
   return (
@@ -62,7 +64,7 @@ const CategoryAndEdit = ({
       <h4 className="bg-accent-orange py-2 px-5 text-wh-900 text-sm font-bold">
         {post.category}
       </h4>
-      {(userUid && userUid === post.userId) && (
+      {((userEmail && userEmail === post.userEmail)) && (
         <div className="mt-4">
           {isEditable ? (
             <div className="flex justify-between gap-3">
@@ -87,7 +89,7 @@ const CategoryAndEdit = ({
           deleteMessage={'Are you sure you want to delete this post?'}
           showDeleteConfirmation={showDeleteConfirmation}
           setShowDeleteConfirmation={setShowDeleteConfirmation}
-          deleteUser={async () => {}}
+          deleteUser={async () => { }}
           confirmDeleteUser={false}
           setConfirmDeleteUser={() => void {}}
           setVerificationPassword={() => void {}}

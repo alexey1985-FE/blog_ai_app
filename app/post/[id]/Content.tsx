@@ -37,8 +37,10 @@ const Content = ({ post, postId }: Props) => {
   const [file, setFile] = useState<File | null>(null);
   const [newImage, setNewImage] = useState<string | null>(null);
 
+
   const { data } = useSession()
   const router = useRouter();
+
 
   const userAuthId = data?.user?.uid
   const imageInputRef = useRef<HTMLInputElement | null>(null);
@@ -47,8 +49,17 @@ const Content = ({ post, postId }: Props) => {
   const options = { year: "numeric", month: "long", day: "numeric" } as any;
   const formattedDate = date.toLocaleDateString("en-US", options);
 
+
+  console.log('Content.tsx userAuthId', userAuthId);
+  console.log('Content.tsx userEmail', data?.user.email);
+  console.log('Content.tsx postUserEmail', post.userEmail);
+  console.log('Content.tsx postId', postId);
+
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     let imageURL = post.image;
 
     if (title === "") setTitleError("This field is required.");
@@ -83,6 +94,7 @@ const Content = ({ post, postId }: Props) => {
         editor.chain().focus().setContent(content).run();
       }
     }
+
 
     handleIsEditable(false);
     setTempTitle("");
@@ -126,7 +138,6 @@ const Content = ({ post, postId }: Props) => {
       setContent(updatedContent);
     }
   };
-
 
   const handleOnChangeContent = ({ editor }: any) => {
     if (!(editor as Editor).isEmpty) setContentError("");
@@ -207,6 +218,11 @@ const Content = ({ post, postId }: Props) => {
         if (postDoc.exists()) {
           const currentViews = postDoc.data().views || 0;
 
+          const postUserId = postDoc.data().userId || null;
+          if (postUserId !== userAuthId) {
+            updateDoc(postRef, { userId: userAuthId });
+          }
+
           await updateDoc(postRef, {
             views: currentViews + 1,
           });
@@ -223,6 +239,50 @@ const Content = ({ post, postId }: Props) => {
       incrementViews();
     }
   }, [userAuthId, postId]);
+
+  // const updateUserAndPost = async () => {
+  //   const postRef = doc(db, 'posts', postId);
+  //   await updateDoc(postRef, { userId: userAuthId });
+  //   router.refresh();
+
+  //   if (postUserId?.match(/\D/)) {
+  //     return
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const updateUserAndPost = async () => {
+  //     const postRef = doc(db, 'posts', postId);
+  //     const postDoc = await getDoc(postRef);
+  //     if (postDoc.exists()) {
+  //       const postData = postDoc.data();
+  //       if (postData && postData.userEmail && postData.userEmail === userEmail) {
+  //         await updateDoc(postRef, { userId: userAuthId });
+  //         router.refresh();
+  //       }
+  //     }
+  //   };
+
+  //   if (postEmail && postEmail === userEmail && user === postAuthor) {
+  //     updateUserAndPost();
+  //   }
+  // }, []);
+
+
+  useEffect(() => {
+    const postRef = doc(db, "posts", postId);
+
+    const unsubscribe = onSnapshot(postRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        setViews(data.views || 0);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [postId, userAuthId]);
 
 
   return (

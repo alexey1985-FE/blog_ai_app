@@ -18,9 +18,6 @@ const Tech = ({ techPosts }: Props) => {
   const groupSize = isMobile ? 1 : 4;
   const groupedHotPosts = useGroupedPosts(techPosts, groupSize);
 
-
-  console.log('Tech.tsx groupedHotPosts', groupedHotPosts);
-
   return (
     <section>
       <hr className="border-1" />

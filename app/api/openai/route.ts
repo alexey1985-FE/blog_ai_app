@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 			messages: [
 				{
 					role: 'user',
-					content: `Create a 3 paragraphs of text blog post using html tags (for heading and paragraph only) for formatting text based on ${title} only.
+					content: `Create a 3 paragraphs of text blog post using html tags (for heading and paragraph only) for formatting text based on ${title} only without changing the ${title}.
           Never write ${title} and ${role} together in a title of the post!
           Always ignore ${role} only in the name of title of the post!
           It is not necessary to write each sentence with a new heading and start on a new line.

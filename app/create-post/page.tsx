@@ -133,8 +133,11 @@ const CreatePost = () => {
       const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1
         }-${currentDate.getDate()}`;
 
+      const userEmail = data?.user?.email || ''
+
       const post = {
         author: userName,
+        userEmail,
         title,
         category,
         content,
@@ -171,6 +174,19 @@ const CreatePost = () => {
       setUserId(data?.user?.uid);
     }
   }, [data]);
+
+  useEffect(() => {
+    const currentContent = editor?.getHTML();
+    const titleInContentMatch = currentContent?.match(/<(h[1-6])>(.*?)<\/\1>/);
+
+    if (titleInContentMatch) {
+      const titleInContent = titleInContentMatch[2];
+
+      if (title !== titleInContent) {
+        setForm({ ...form, title: titleInContent });
+      }
+    }
+  }, [content, title, form, editor]);
 
   return (
     <div className='flex justify-center mt-2 mb-10 min-w-[20rem] w-full md:min-w-1000 grow px-3'>

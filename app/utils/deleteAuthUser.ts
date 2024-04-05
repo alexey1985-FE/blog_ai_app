@@ -1,4 +1,4 @@
-import { db } from '@/firebase-config';
+import { db, storage } from '@/firebase-config';
 import {
 	EmailAuthProvider,
 	User,
@@ -7,6 +7,7 @@ import {
 	reauthenticateWithCredential,
 } from 'firebase/auth';
 import { collection, deleteDoc, doc } from 'firebase/firestore';
+import { deleteObject, ref } from 'firebase/storage';
 import { Dispatch, SetStateAction } from 'react';
 
 export const deleteAccount = async (
@@ -26,6 +27,9 @@ export const deleteAccount = async (
 			await reauthenticateWithCredential(auth.currentUser, credential);
 			await deleteUser(auth.currentUser as User);
 			await deleteDoc(userRef);
+
+      const storageRef = ref(storage, `userLogos/${uid}`);
+			await deleteObject(storageRef);
 		}
 	} catch (error) {
 		console.error('Error deleting account:', error);

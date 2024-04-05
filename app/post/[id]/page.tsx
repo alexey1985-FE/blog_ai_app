@@ -2,7 +2,7 @@ import Sidebar from "@/(shared)/Sidebar";
 import { getPostById } from "@/utils/fetchPosts";
 import React from "react";
 import Content from "./Content";
-import { Post } from '@/types'
+import { Post as PostType } from '@/types'
 
 type Props = {
 	params: { id: string };
@@ -20,7 +20,7 @@ const Post = async ({ params }: Props) => {
 	return (
 		<main className="px-5 sm:px-10 leading-7">
 			<div className="md:flex gap-10 mb-5">
-				<div className="basis-3/4"><Content post={post as Post} postId={id}/></div>
+				<div className="basis-3/4"><Content post={post as PostType} postId={id}/></div>
 				<div className="basis-1/4">
 					<Sidebar />
 				</div>

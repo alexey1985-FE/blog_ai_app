@@ -8,6 +8,7 @@ export interface Post {
 	snippet: string;
 	createdAt: string;
 	author: string;
+	userEmail: string;
 	content: string;
 	userId?: string;
 	googleUid: string;
