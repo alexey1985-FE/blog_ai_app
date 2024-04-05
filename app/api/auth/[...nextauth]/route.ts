@@ -8,7 +8,7 @@ import { getUserNameAndLogo } from '@/utils/getUserNameAndLogoByUid';
 
 type ExtendedUserType = User & { uid?: string; userName: string; userLogo: string; };
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
 	pages: {
 		signIn: '/signin',
 		signOut: '/',
