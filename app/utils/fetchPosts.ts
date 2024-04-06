@@ -6,6 +6,7 @@ import {
 	doc,
 	getDoc,
 	deleteDoc,
+	getDocsFromServer,
 } from 'firebase/firestore';
 import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { db } from '@/firebase-config';
@@ -13,7 +14,7 @@ import { Post } from '@/types';
 
 export const getPosts = async () => {
 	const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
-	const querySnapshot = await getDocs(q);
+	const querySnapshot = await getDocsFromServer(q);
 	const postsArr: Post[] = [];
 
 	querySnapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
