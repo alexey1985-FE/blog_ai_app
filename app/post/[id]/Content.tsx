@@ -49,14 +49,6 @@ const Content = ({ post, postId }: Props) => {
   const options = { year: "numeric", month: "long", day: "numeric" } as any;
   const formattedDate = date.toLocaleDateString("en-US", options);
 
-
-  console.log('Content.tsx userAuthId', userAuthId);
-  console.log('Content.tsx userEmail', data?.user.email);
-  console.log('Content.tsx postUserEmail', post.userEmail);
-  console.log('Content.tsx postId', postId);
-
-
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
