@@ -44,8 +44,8 @@ const CategoryAndEdit = ({
       await deleteCommentsForPost(postId);
       await deletePost(postId);
 
-      router.push("/");
       router.refresh();
+      router.push("/");
     } catch (error) {
       console.error("Error deleting post:", error);
     }
