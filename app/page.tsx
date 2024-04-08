@@ -5,9 +5,12 @@ import Other from "app/(shared)/Other";
 import Sidebar from "app/(shared)/Sidebar";
 import { Post } from "./types";
 import { getPosts } from "./utils/fetchPosts";
+import { revalidatePath } from "next/cache";
 
 export default async function Home() {
   const posts: Post[] = await getPosts();
+
+  revalidatePath('/');
 
   const compareCreatedAt = (a: Post, b: Post) => {
     const dateA = new Date(a.createdAt);
