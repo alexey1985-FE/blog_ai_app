@@ -37,10 +37,8 @@ const Content = ({ post, postId }: Props) => {
   const [file, setFile] = useState<File | null>(null);
   const [newImage, setNewImage] = useState<string | null>(null);
 
-
   const { data } = useSession()
   const router = useRouter();
-
 
   const userAuthId = data?.user?.uid
   const imageInputRef = useRef<HTMLInputElement | null>(null);
@@ -87,7 +85,6 @@ const Content = ({ post, postId }: Props) => {
       }
     }
 
-
     handleIsEditable(false);
     setTempTitle("");
     setTempContent("");
@@ -101,7 +98,6 @@ const Content = ({ post, postId }: Props) => {
   function removeTags(input: string): string {
     return input.replace(/<\/?[^>]+(>|$)/g, "");
   }
-
 
   const handleOnChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (title) setTitleError("");
@@ -126,10 +122,11 @@ const Content = ({ post, postId }: Props) => {
         setTitle(removeTags(updatedContent.match(/<h[1-3]>(.*?)<\/h[1-3]>/)?.[1] || ''));
       }
 
-      setTitle(updatedTitle)
+      setTitle(updatedTitle);
       setContent(updatedContent);
     }
   };
+
 
   const handleOnChangeContent = ({ editor }: any) => {
     if (!(editor as Editor).isEmpty) setContentError("");
@@ -232,35 +229,6 @@ const Content = ({ post, postId }: Props) => {
     }
   }, [userAuthId, postId]);
 
-  // const updateUserAndPost = async () => {
-  //   const postRef = doc(db, 'posts', postId);
-  //   await updateDoc(postRef, { userId: userAuthId });
-  //   router.refresh();
-
-  //   if (postUserId?.match(/\D/)) {
-  //     return
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const updateUserAndPost = async () => {
-  //     const postRef = doc(db, 'posts', postId);
-  //     const postDoc = await getDoc(postRef);
-  //     if (postDoc.exists()) {
-  //       const postData = postDoc.data();
-  //       if (postData && postData.userEmail && postData.userEmail === userEmail) {
-  //         await updateDoc(postRef, { userId: userAuthId });
-  //         router.refresh();
-  //       }
-  //     }
-  //   };
-
-  //   if (postEmail && postEmail === userEmail && user === postAuthor) {
-  //     updateUserAndPost();
-  //   }
-  // }, []);
-
-
   useEffect(() => {
     const postRef = doc(db, "posts", postId);
 
@@ -275,6 +243,22 @@ const Content = ({ post, postId }: Props) => {
       unsubscribe();
     };
   }, [postId, userAuthId]);
+
+
+  useEffect(() => {
+    setTitleError('')
+    const currentContent = editor?.getHTML();
+    const titleInContentMatch = currentContent?.match(/<(h[1-6])>(.*?)<\/\1>/);
+
+    if (titleInContentMatch) {
+      const titleInContent = titleInContentMatch[2];
+
+      if (tempTitle !== titleInContent) {
+        setTitle(titleInContent);
+        setTempTitle(titleInContent)
+      }
+    }
+  }, [editor, content]);
 
 
   return (
