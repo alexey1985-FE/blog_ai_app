@@ -1,34 +1,41 @@
 import {
 	collection,
-	getDocs,
 	query,
 	orderBy,
 	doc,
 	getDoc,
 	deleteDoc,
-	getDocsFromServer,
+	onSnapshot,
 } from 'firebase/firestore';
-import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { db } from '@/firebase-config';
 import { Post } from '@/types';
+import { useEffect, useState } from 'react';
 
-export const getPosts = async () => {
-	const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
-	const querySnapshot = await getDocsFromServer(q);
-	const postsArr: Post[] = [];
+const usePosts = () => {
+	const [posts, setPosts] = useState<Post[]>([]);
 
-	querySnapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
-		const data = doc.data();
-		postsArr.push({ ...data, id: doc.id } as Post);
-	});
+	useEffect(() => {
+		const unsubscribe = onSnapshot(
+			query(collection(db, 'posts'), orderBy('createdAt', 'desc')),
+			(snapshot) => {
+				const updatedPosts: Post[] = [];
+				snapshot.forEach((doc) => {
+					updatedPosts.push({ ...doc.data(), id: doc.id } as Post);
+				});
+				setPosts(updatedPosts);
+			},
+		);
 
-	return postsArr;
+		return () => unsubscribe();
+	}, []);
+
+	return posts;
 };
 
-export const getPopularSortedPosts = async (): Promise<Post[]> => {
-	try {
-		const allPosts = await getPosts();
+export default usePosts;
 
+export const getPopularSortedPosts = async (allPosts: Post[]): Promise<Post[]> => {
+	try {
 		const filteredPosts = allPosts.filter((post) => post.views && post.views > 5);
 
 		const sortedPosts = filteredPosts.sort((a, b) => {

@@ -1,16 +1,15 @@
+"use client"
 import Hot from "@/(home)/Hot";
 import Tech from "app/(home)/Tech";
 import Travel from "app/(home)/Travel";
 import Other from "app/(shared)/Other";
 import Sidebar from "app/(shared)/Sidebar";
 import { Post } from "./types";
-import { getPosts } from "./utils/fetchPosts";
-import { revalidatePath } from "next/cache";
+import usePosts from "./utils/fetchPosts";
+import Loading from "./post/loading";
 
-export default async function Home() {
-  const posts: Post[] = await getPosts();
-
-  revalidatePath('/');
+export default function Home() {
+  const posts = usePosts();
 
   const compareCreatedAt = (a: Post, b: Post) => {
     const dateA = new Date(a.createdAt);
@@ -47,19 +46,29 @@ export default async function Home() {
     }
   });
 
+  if (!posts.length) {
+    return <Loading />;
+  }
+
   return (
     <main className="px-5 sm:px-10 leading-7">
-      {hotPosts && <Hot hotPosts={hotPosts} />}
-      <div className="md:flex gap-10 mb-5">
-        <div className="basis-3/4">
-          <Tech techPosts={techPosts} />
-          <Travel travelPosts={travelPosts} />
-          <Other otherPosts={otherPosts} />
-        </div>
-        <div className="basis-1/4">
-          <Sidebar />
-        </div>
-      </div>
+      {posts.length > 0 && (
+        <>
+          {hotPosts && <Hot hotPosts={hotPosts} />}
+          <div className="md:flex gap-10 mb-5">
+            <div className="basis-3/4">
+              <Tech techPosts={techPosts} />
+              <Travel travelPosts={travelPosts} />
+              <Other otherPosts={otherPosts} />
+            </div>
+            <div className="basis-1/4">
+              <Sidebar />
+            </div>
+          </div>
+        </>
+      )}
     </main>
   );
 }
+
+

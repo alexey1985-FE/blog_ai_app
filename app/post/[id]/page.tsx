@@ -1,3 +1,4 @@
+'use client'
 import Sidebar from "@/(shared)/Sidebar";
 import { getPostById } from "@/utils/fetchPosts";
 import React from "react";
