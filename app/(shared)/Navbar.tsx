@@ -195,6 +195,9 @@ const Navbar = () => {
                 <div className="flex space-x-4">
                   {links.map((link, index) => {
                     const isActive = pathname.endsWith(link.href) && !isMobile;
+                    if (link.href === "/create-post" && !data) {
+                      return null;
+                    }
                     return (
                       <Link
                         key={index}
