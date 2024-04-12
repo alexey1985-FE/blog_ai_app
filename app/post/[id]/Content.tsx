@@ -1,6 +1,6 @@
 "use client"
 import { Post } from "@/types";
-import React, { useState, useEffect, useRef, ChangeEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent, FormEvent, MouseEvent } from "react";
 import Image from "next/image";
 import SocialLinks from "@/(shared)/SocialLinks";
 import { useEditor, Editor } from "@tiptap/react";
@@ -16,6 +16,7 @@ import { snippetGenerate } from "@/utils/snippetGenerate";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useRouter } from "next/navigation";
+import { toDate } from "@/utils/formattDate";
 
 type Props = {
   post: Post;
@@ -43,11 +44,11 @@ const Content = ({ post, postId }: Props) => {
   const userAuthId = data?.user?.uid
   const imageInputRef = useRef<HTMLInputElement | null>(null);
 
-  const date = new Date(post?.createdAt);
+  const date = toDate(post.createdAt);
   const options = { year: "numeric", month: "long", day: "numeric" } as any;
   const formattedDate = date.toLocaleDateString("en-US", options);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     let imageURL = post.image;
@@ -99,7 +100,7 @@ const Content = ({ post, postId }: Props) => {
     return input.replace(/<\/?[^>]+(>|$)/g, "");
   }
 
-  const handleOnChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     if (title) setTitleError("");
 
     if (editor && editor.getHTML) {
@@ -157,7 +158,7 @@ const Content = ({ post, postId }: Props) => {
     },
   });
 
-  const handleEditImage = (e: React.MouseEvent) => {
+  const handleEditImage = (e: MouseEvent) => {
     e.preventDefault();
 
     if (imageInputRef.current) {
@@ -178,7 +179,6 @@ const Content = ({ post, postId }: Props) => {
       setNewImage('');
     }
   };
-
 
   useEffect(() => {
     const postRef = doc(db, "posts", postId);
@@ -224,6 +224,7 @@ const Content = ({ post, postId }: Props) => {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (userAuthId) {
       incrementViews();
     }

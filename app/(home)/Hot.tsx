@@ -18,6 +18,7 @@ const Hot = ({ hotPosts }: Props) => {
 
   return (
     <section className="pt-3 pb-10">
+      <hr className="border-1 pt-10" />
       <div className="flex items-center gap-3">
         <div className="bg-red-500 py-2 px-8 text-wh-10 text-sm font-bold">HOT</div>
         <p className="font-bold text-2xl dark:text-accent-orange">

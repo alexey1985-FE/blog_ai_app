@@ -11,7 +11,6 @@ import EditorMenuBar from '@/post/[id]/EditorMenuBar';
 import { capitalizeFirstLetter, snippetGenerate } from '@/utils/snippetGenerate';
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { useRouter } from 'next/navigation';
-import React from 'react';
 
 interface PostContent {
   title: string;
@@ -37,16 +36,40 @@ const CreatePost = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [imageInputValue, setImageInputValue] = useState('');
   const [isAiContentGenerated, setIsAiContentGenerated] = useState(false);
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+  const [inputTitle, setInputTitle] = useState('');
 
   const { title, category, content, snippet } = form;
   const { data } = useSession();
   const router = useRouter();
 
+  function removeTags(input: string): string {
+    return input.replace(/<\/?[^>]+(>|$)/g, "");
+  }
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const updatedTitle = capitalizeFirstLetter(e.target.value);
-    if (form.title !== updatedTitle) {
-      setForm({ ...form, title: updatedTitle });
+    if (editor && editor.getHTML) {
+      const updatedTitle = capitalizeFirstLetter(e.target.value);
+      const currentContent = editor.getHTML();
+
+      const paragraphs = currentContent.match(/<(h[1-3]|p)>(.*?)<\/(h[1-3]|p)>/g) || [];
+      const isFirstTitleParagraph = paragraphs[0]?.includes('<p>');
+
+      let updatedContent = '';
+      if (isFirstTitleParagraph) {
+        updatedContent = currentContent.replace(/<p>(.*?)<\/p>/, `<p>${updatedTitle}</p>`);
+      } else {
+        updatedContent = currentContent.replace(/<(h[1-3])>(.*?)<\/(h[1-3])>/, `<$1>${updatedTitle}</$3>`);
+      }
+
+      if (editor.isActive('paragraph') && !editor.isFocused && isFirstTitleParagraph) {
+        setInputTitle(removeTags(updatedContent.match(/<p>(.*?)<\/p>/)?.[1] || ''));
+      } else {
+        setInputTitle(removeTags(updatedContent.match(/<h[1-3]>(.*?)<\/h[1-3]>/)?.[1] || ''));
+      }
+
+      setInputTitle(updatedTitle)
+      setForm({ ...form, content: updatedContent });
     }
   };
 
@@ -83,7 +106,7 @@ const CreatePost = () => {
   });
 
   const createAiContent = async () => {
-    if (title && category) {
+    if (inputTitle && category) {
       setIsAiContentGenerated(true);
       editor?.chain().focus().setContent('Generating AI Content. Please Wait...').run();
 
@@ -91,7 +114,7 @@ const CreatePost = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title,
+          inputTitle,
           role: category,
         }),
       });
@@ -120,6 +143,12 @@ const CreatePost = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (isSubmittingForm) {
+      return;
+    }
+
+    setIsSubmittingForm(true)
+
     try {
       let imageURL = '';
       if (file) {
@@ -130,20 +159,17 @@ const CreatePost = () => {
       }
 
       const currentDate = new Date();
-      const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1
-        }-${currentDate.getDate()}`;
-
       const userEmail = data?.user?.email || ''
 
       const post = {
         author: userName,
         userEmail,
-        title,
+        title: inputTitle,
         category,
         content,
         snippet,
         image: imageURL,
-        createdAt: formattedDate,
+        createdAt: currentDate,
       };
 
       const docRef = await addDoc(collection(db, 'posts'), post);
@@ -158,15 +184,19 @@ const CreatePost = () => {
       setFile(null);
       setImage('');
       setImageInputValue('');
+      setInputTitle('');
 
       router.push("/");
+      setIsSubmittingForm(false)
       router.refresh();
     } catch (error) {
       console.error('Error creating post:', error);
+      setIsSubmittingForm(false);
     }
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (data) {
       setUserName(data?.user?.name || data?.user?.userName);
     }
@@ -184,6 +214,7 @@ const CreatePost = () => {
 
       if (title !== titleInContent) {
         setForm({ ...form, title: titleInContent });
+        setInputTitle(titleInContent);
       }
     }
   }, [content, title, form, editor]);
@@ -204,7 +235,7 @@ const CreatePost = () => {
                 <div className='mt-2'>
                   <input
                     type='text'
-                    value={title}
+                    value={inputTitle}
                     onChange={handleTitleChange}
                     required
                     className='block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6'
@@ -278,9 +309,11 @@ const CreatePost = () => {
         <div className='mt-6 flex items-center justify-end gap-x-6'>
           <button
             type='submit'
-            className='rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+            disabled={isSubmittingForm}
+            className={`rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isSubmittingForm ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-500'
+              }`}
           >
-            Create
+            {isSubmittingForm ? 'Creating...' : 'Create'}
           </button>
         </div>
       </form>

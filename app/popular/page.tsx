@@ -10,6 +10,7 @@ const PopularPosts = () => {
   const [popularSortedPosts, setPopularSortedPosts] = useState<Post[]>([]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchPopularSortedPosts = async () => {
       try {
         const posts = await getPopularSortedPosts(allPosts);

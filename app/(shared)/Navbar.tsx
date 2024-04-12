@@ -6,6 +6,7 @@ import SocialLinks from "./SocialLinks";
 import Ad1 from "/public/assets/ad-1.jpg";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { MenuBtn } from "./MenuBtn";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
@@ -27,7 +28,7 @@ const Navbar = () => {
   const [scrollingDown, setScrollingDown] = useState(false);
   const [prevScrollY, setPrevScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState("");
+  const [, setActiveLink] = useState("");
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [themeChanged, setThemeChanged] = useState(false);
@@ -40,7 +41,7 @@ const Navbar = () => {
 
   const headerRef = useRef<HTMLDivElement | null>(null);
   const isMobile = useMedia('(max-width: 767px)');
-
+  const pathname = usePathname()
 
   const { data, update } = useSession();
   const { userName, userLogo, setUserName, setUserLogo } = useGetUser()
@@ -192,34 +193,20 @@ const Navbar = () => {
             <div className="flex flex-1 items-center justify-center">
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
-                  <Link
-                    className={`text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium ${activeLink === "home" && !isMobile ? "bg-gray-700 text-white" : ""
-                      }`}
-                    href="/"
-                    onClick={() => toggleLink("home")}
-                  >
-                    Home
-                  </Link>
-
-                  <Link
-                    className={`text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium ${activeLink === "popular" && !isMobile ? "bg-gray-700 text-white" : ""
-                      }`}
-                    href="/popular"
-                    onClick={() => toggleLink("popular")}
-                  >
-                    Popular posts
-                  </Link>
-
-                  {data && (
-                    <Link
-                      className={`text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium ${activeLink === "create-post" && !isMobile ? "bg-gray-700 text-white" : ""
-                        }`}
-                      href="/create-post"
-                      onClick={() => toggleLink("create-post")}
-                    >
-                      Create post
-                    </Link>
-                  )}
+                  {links.map((link, index) => {
+                    const isActive = pathname.endsWith(link.href) && !isMobile;
+                    return (
+                      <Link
+                        key={index}
+                        className={`text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium ${isActive ? "bg-gray-700 text-white" : ""
+                          }`}
+                        href={link.href}
+                        onClick={() => toggleLink(link.text.toLowerCase())}
+                      >
+                        {link.text}
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -346,7 +333,6 @@ const Navbar = () => {
           />
         </div>
       </div>
-      <hr className="border-1 mx-10" />
     </header >
   );
 };

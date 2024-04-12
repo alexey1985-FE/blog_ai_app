@@ -1,5 +1,6 @@
 "use client"
 import { Post } from "@/types";
+import { toDate } from "@/utils/formattDate";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,11 +23,11 @@ const Card = ({
   isSmallCard = false,
   isLongForm = false,
 }: Props) => {
-  const { title, author, createdAt, image, snippet } = post;
+  const { title, author, createdAt, image, snippet, category, id } = post;
   const pathName = usePathname();
   const pageName = pathName.split('/').pop();
 
-  const date = new Date(createdAt);
+  const date = toDate(createdAt)
   const options = { year: "numeric", month: "long", day: "numeric" } as any;
   const formattedDate = date.toLocaleDateString("en-US", options);
 
@@ -35,14 +36,14 @@ const Card = ({
       {postsName === 'Hot' && imageHeight === '' ?
         (<Link
           className={`${className} sm:mt-0 sm:h-auto relative mt-7 block w-full h-96 hover:opacity-70`}
-          href={`${process.env.NEXT_PUBLIC_URL}/post/${post?.id}`}
+          href={`${process.env.NEXT_PUBLIC_URL}/post/${id}`}
         >
           <div className="z-0 relative w-full h-full">
-            {post?.image && (
+            {image && (
               <Image
                 fill
                 alt="tech"
-                src={post.image}
+                src={image}
                 sizes="(max-width: 480px) 100vw,
             (max-width: 768px) 75vw,
             (max-width: 1060px) 50vw,
@@ -55,17 +56,17 @@ const Card = ({
           </div>
           <div className="absolute z-2 bottom-0 left-0 p-3">
             <h4 className="inline-block px-5 py-1 font-semibold bg-accent-orange text-wh-900">
-              {post?.category}
+              {category}
             </h4>
             <div className="text-slate-200 mt-2 text-lg">
-              {post?.title}
+              {title}
             </div>
           </div>
         </Link>) :
         (<div className={className}>
           <Link
             className="basis-full hover:opacity-70 relative"
-            href={`${process.env.NEXT_PUBLIC_URL}/post/${post?.id}`}
+            href={`${process.env.NEXT_PUBLIC_URL}/post/${id}`}
           >
             <div className={`relative w-auto mb-3 ${imageHeight}`}>
               {image && (
@@ -85,17 +86,17 @@ const Card = ({
               {postsName === 'Other' && (
                 <div className="absolute z-2 bottom-0 left-0 p-3">
                   <h4 className="inline-block px-5 py-1 font-semibold bg-accent-orange text-wh-900">
-                    {post?.category}
+                    {category}
                   </h4>
                   <p className="text-white mt-2 text-lg">
-                    {post?.title}
+                    {title}
                   </p>
                 </div>
               )}
             </div>
           </Link>
           <div className="basis-full">
-            {pageName === 'popular' && <Link href={`${process.env.NEXT_PUBLIC_URL}/post/${post?.id}`}>
+            {pageName === 'popular' && <Link href={`${process.env.NEXT_PUBLIC_URL}/post/${id}`}>
               <h4
                 className={`font-bold hover:text-accent-green
               ${isSmallCard ? "text-base" : "text-lg"}

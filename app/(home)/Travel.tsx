@@ -37,7 +37,7 @@ const Travel = ({ travelPosts }: Props) => {
       >
         {groupedHotPosts.map((group, groupIndex) => (
           <SwiperSlide key={groupIndex}>
-            <div className="sm:flex justify-between gap-8">
+            <div className="sm:flex gap-8">
               {group.slice(0, 3).map((post) => (
                 <Card
                   key={post.id}
